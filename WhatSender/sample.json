@@ -1,0 +1,20 @@
+{
+  "messages": [
+    {
+      "id": 234,
+      "phone": "917405136746",
+      "message": "This is an automated message",
+      "attachment": "C:/filepathwillbehere/abc.pdf",
+      "isMedia": false,
+      "isDocument": true
+    },
+    {
+      "id": 235,
+      "phone": "917405136746",
+      "message": "This is an automated message2",
+      "attachment": "C:/filepathwillbehere/abc2.pdf",
+      "isMedia": false,
+      "isDocument": true
+    }
+  ]
+}

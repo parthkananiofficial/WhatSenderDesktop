@@ -1,0 +1,73 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/object1615376945.json",
+  "title": "Root",
+  "type": "object",
+  "required": [
+    "messages"
+  ],
+  "properties": {
+    "messages": {
+      "$id": "#root/messages",
+      "title": "Messages",
+      "type": "array",
+      "default": [],
+      "items": {
+        "$id": "#root/messages/items",
+        "title": "Items",
+        "type": "object",
+        "required": [
+          "id",
+          "phone",
+          "message",
+          "attachment",
+          "isMedia",
+          "isDocument"
+        ],
+        "properties": {
+          "id": {
+            "$id": "#root/messages/items/id",
+            "title": "Id",
+            "type": "integer",
+            "default": 0
+          },
+          "phone": {
+            "$id": "#root/messages/items/phone",
+            "title": "Phone",
+            "type": "string",
+            "default": "",
+            "pattern": "^.*$"
+          },
+          "message": {
+            "$id": "#root/messages/items/message",
+            "title": "Message",
+            "type": "string",
+            "default": "",
+            "pattern": "^.*$"
+          },
+          "attachment": {
+            "$id": "#root/messages/items/attachment",
+            "title": "Attachment",
+            "type": "string",
+            "default": "",
+            "pattern": "^.*$"
+          },
+          "isMedia": {
+            "$id": "#root/messages/items/isMedia",
+            "title": "Ismedia",
+            "type": "boolean",
+            "default": true
+          },
+          "isDocument": {
+            "$id": "#root/messages/items/isDocument",
+            "title": "Isdocument",
+            "type": "boolean",
+            "default": true
+          }
+        }
+      }
+
+    }
+  }
+}
