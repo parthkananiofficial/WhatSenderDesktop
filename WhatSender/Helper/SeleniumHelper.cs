@@ -13,13 +13,17 @@ namespace WhatSender
     {
         IWebDriver Driver;
         string MENU_BUTTON = "//*[@data-testid='menu']";
-        string FILE_SEND_BUTTON = "/html/body/div[1]/div/div/div[2]/div[2]/span/div/span/div/div/div[2]/span/div/div";
-        string SEND_BUTTON = "/html/body/div[1]/div/div/div[4]/div/footer/div[1]/div[3]/button";
+        //string FILE_SEND_BUTTON = "/html/body/div[1]/div/div/div[2]/div[2]/span/div/span/div/div/div[2]/span/div/div";
+        string FILE_SEND_BUTTON = "/html/body/div/div/div/div[2]/div[2]/span/div/span/div/div/div[2]/span/div/div";
+        //string SEND_BUTTON = "/html/body/div[1]/div/div/div[4]/div/footer/div[1]/div[3]/button";
+        string SEND_BUTTON = "/html/body/div/div/div/div[4]/div/footer/div[1]/div[3]/button";
+        string IMAGE_SEND_BUTTON = "/html/body/div/div/div/div[2]/div[2]/span/div/span/div/div/div[2]/span/div";
         //string SEND_BUTTON = "span[data-icon='send']";
         string CLIP_BUTTON = "span[data-icon='clip']";
-        //string VIDEO_OR_PICTURE = "/html/body/div[1]/div/div/div[4]/div/footer/div[1]/div[1]/div[2]/div/span/div/div/ul/li[1]/button/input";
-        string VIDEO_OR_PICTURE = "input[type='file']";
-        string DOCUMENT_Xpath = "/html/body/div[1]/div/div/div[4]/div/footer/div[1]/div[1]/div[2]/div/span/div/div/ul/li[3]/button/input";
+        string VIDEO_OR_PICTURE = "/html/body/div/div/div/div[4]/div/footer/div[1]/div[1]/div[2]/div/span/div/div/ul/li[1]/button/input";
+        //string VIDEO_OR_PICTURE = "input[type='file']";
+        //string DOCUMENT_Xpath = "/html/body/div[1]/div/div/div[4]/div/footer/div[1]/div[1]/div[2]/div/span/div/div/ul/li[3]/button/input";
+        string DOCUMENT_Xpath = "/html/body/div/div/div/div[4]/div/footer/div[1]/div[1]/div[2]/div/span/div/div/ul/li[3]/button/input";
         Boolean status;
         Boolean isLoggedIn = false;
         int waiting_time = 20;
@@ -121,6 +125,7 @@ namespace WhatSender
             }
             catch (NoSuchElementException)
             {
+                LogHelper.Write("Send button not found");
                 return false;
             }
             catch (Exception excp)
@@ -151,13 +156,13 @@ namespace WhatSender
             catch (NoSuchElementException)
             {
             }
-            Thread.Sleep(3000);
-            //wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath(VIDEO_OR_PICTURE)));
+            //Thread.Sleep(3000);
+            wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath(VIDEO_OR_PICTURE)));
             try
             {
                 Driver.FindElement(By.XPath(VIDEO_OR_PICTURE)).SendKeys(whatsApp.Attachment);//Web.whatsapp input image or video file path
-                wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath(SEND_BUTTON)));
-                Driver.FindElement(By.XPath(SEND_BUTTON)).Click();
+                wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath(IMAGE_SEND_BUTTON)));
+                Driver.FindElement(By.XPath(IMAGE_SEND_BUTTON)).Click();
                 //Driver.FindElement(By.XPath("/html/body/div[1]/div/div/div[2]/div[2]/span/div/span/div/div/div[2]/span/div/div")).Click();//Click send button
                 return true;
             }
@@ -171,7 +176,7 @@ namespace WhatSender
                 LogHelper.Write("Error in SendImageOrVideo :" + Excp.Message);
                 return false;
             }
-            Thread.Sleep(3000);
+            //Thread.Sleep(3000);
         }
 
         public Boolean SendFile(WhatsApp whatsApp)
@@ -195,10 +200,10 @@ namespace WhatSender
                 //Thread.Sleep(2000);
                 // FailedProcess++;
             }
-            Thread.Sleep(3000);
+            //Thread.Sleep(3000);
             try
             {
-                //wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath(DOCUMENT_Xpath)));
+                wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath(DOCUMENT_Xpath)));
                 Driver.FindElement(By.XPath(DOCUMENT_Xpath)).SendKeys(whatsApp.Attachment);//Web.whatsapp input File(pdf,rar,zip,exe...) file path
                 //wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("/html/body/div[1]/div/div/div[2]/div[2]/span/div/span/div/div/div[2]/span/div/div")));
                 wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath(FILE_SEND_BUTTON)));
@@ -217,7 +222,7 @@ namespace WhatSender
                 LogHelper.Write("Error in SendFile :" + Excp.Message);
                 return false;
             }
-            Thread.Sleep(3000);
+            //Thread.Sleep(3000);
         }
 
         public Boolean CanSendMessage()

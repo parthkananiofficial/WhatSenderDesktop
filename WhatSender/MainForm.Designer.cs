@@ -1177,6 +1177,7 @@ namespace WhatSender
             // metroButtonStartStop
             // 
             this.metroButtonStartStop.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.metroButtonStartStop.Enabled = false;
             this.metroButtonStartStop.Location = new System.Drawing.Point(0, 0);
             this.metroButtonStartStop.Name = "metroButtonStartStop";
             this.metroButtonStartStop.Size = new System.Drawing.Size(124, 38);
@@ -1211,6 +1212,7 @@ namespace WhatSender
             this.metroButtonExport.TabIndex = 4;
             this.metroButtonExport.Text = "Export";
             this.metroButtonExport.UseSelectable = true;
+            this.metroButtonExport.Click += new System.EventHandler(this.metroButtonExport_Click);
             // 
             // metroLabelStatus
             // 

@@ -395,7 +395,7 @@ namespace WhatSender
                     whatsApp.WithDocument = Convert.ToBoolean(objDataHelper.dt_pending_messages.Rows[i]["Document"]);
                     whatsApp = WhatsAppValidation(whatsApp);
                     //whatsApp.Status = true;//generaterandomBool();
-                    if(!whatsApp.Status || whatsApp.Status)
+                    if(!whatsApp.Status)
                     {
                         //dont' send message if validation failed.
                     }
@@ -608,12 +608,36 @@ namespace WhatSender
         }
         private WhatsApp WhatsAppValidation(WhatsApp whatsapp)
         {
-            if((whatsapp.Attachment == "" && (whatsapp.WithMedia || whatsapp.WithDocument)) || (whatsapp.Attachment != "" && (!whatsapp.WithMedia || !whatsapp.WithDocument)))
+            //if((whatsapp.Attachment == "" && (whatsapp.WithMedia || whatsapp.WithDocument)) || (whatsapp.Attachment != "" && (!whatsapp.WithMedia && !whatsapp.WithDocument)))
+            if (whatsapp.Attachment == "" && (whatsapp.WithMedia || whatsapp.WithDocument))
             {
                 whatsapp.Status = false;
                 whatsapp.Error = "Attachment Value missing";
             }
+            else
+            {
+                whatsapp.Status = true;
+            }
+            
             return whatsapp;
+        }
+
+        private void metroButtonExport_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.InitialDirectory = @"C:\";
+            saveFileDialog1.Title = "Save Information status";
+            saveFileDialog1.CheckFileExists = false;
+            saveFileDialog1.CheckPathExists = true;
+            saveFileDialog1.DefaultExt = "txt";
+            saveFileDialog1.Filter = "CSV files (*.csv)|*.csv";
+            saveFileDialog1.FilterIndex = 2;
+            saveFileDialog1.RestoreDirectory = true;
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                objDataHelper.dt_sent_messages.WriteToCsvFile(saveFileDialog1.FileName);
+                MessageBox.Show("Export completed");
+            }
         }
     }
 }
