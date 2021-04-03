@@ -23,7 +23,9 @@ namespace WhatSender
         string VIDEO_OR_PICTURE = "/html/body/div/div/div/div[4]/div/footer/div[1]/div[1]/div[2]/div/span/div/div/ul/li[1]/button/input";
         //string VIDEO_OR_PICTURE = "input[type='file']";
         //string DOCUMENT_Xpath = "/html/body/div[1]/div/div/div[4]/div/footer/div[1]/div[1]/div[2]/div/span/div/div/ul/li[3]/button/input";
-        string DOCUMENT_Xpath = "/html/body/div/div/div/div[4]/div/footer/div[1]/div[1]/div[2]/div/span/div/div/ul/li[3]/button/input";
+        string DOCUMENT_BUTTON_Xpath = "/html/body/div/div[1]/div[1]/div[4]/div[1]/footer/div[1]/div[1]/div[2]/div/span/div[1]/div/ul/li[3]/button";
+        string DOCUMENT_Xpath = "/html/body/div/div[1]/div[1]/div[4]/div[1]/footer/div[1]/div[1]/div[2]/div/span/div[1]/div/ul/li[3]/button/input";
+        //string DOCUMENT_Xpath = "/html/body/div/div/div/div[4]/div/footer/div[1]/div[1]/div[2]/div/span/div/div/ul/li[3]/button/input";
         Boolean status;
         Boolean isLoggedIn = false;
         int waiting_time = 20;
@@ -203,7 +205,7 @@ namespace WhatSender
             //Thread.Sleep(3000);
             try
             {
-                wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath(DOCUMENT_Xpath)));
+                wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath(DOCUMENT_BUTTON_Xpath)));
                 Driver.FindElement(By.XPath(DOCUMENT_Xpath)).SendKeys(whatsApp.Attachment);//Web.whatsapp input File(pdf,rar,zip,exe...) file path
                 //wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("/html/body/div[1]/div/div/div[2]/div[2]/span/div/span/div/div/div[2]/span/div/div")));
                 wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath(FILE_SEND_BUTTON)));

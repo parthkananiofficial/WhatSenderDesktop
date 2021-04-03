@@ -467,6 +467,7 @@ namespace WhatSender
             {
                 //metroButtonStartStop.Text = "Start";
                 metroLabelStatus.Text = "Completed";
+                dumpDataToWaitingQueue();
             }
         }
         private Boolean generaterandomBool()
@@ -593,7 +594,7 @@ namespace WhatSender
             if (e.ProgressPercentage == 10)
             {
                 frontEndLogs("worker:FetchData Status:CheckIn");
-                dumpDataToWaitingQueue();
+                //dumpDataToWaitingQueue();
             }
             
         }
