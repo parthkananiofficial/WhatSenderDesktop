@@ -149,6 +149,7 @@ namespace WhatSender
                 frontEndLogs("Starting the task");
                 if (configuration.DataSourceConfig.type == DataSourceConfig.API && backgroundWorkerFetchData.IsBusy != true)
                 {
+                    //dumpDataToWaitingQueue();
                     fetchDataWorker(true);
                 }
 
@@ -202,6 +203,7 @@ namespace WhatSender
         {
             if (action)
             {
+                //dumpDataToWaitingQueue();
                 if (backgroundWorkerFetchData.IsBusy != true)
                 {
                     backgroundWorkerFetchData.RunWorkerAsync();
@@ -367,7 +369,7 @@ namespace WhatSender
             metroGridPending.DataSource = objDataHelper.dt_pending_messages;
             metroGridSent.DataSource = objDataHelper.dt_sent_messages;
             refresh_tiles();
-            if (configuration.DataSourceConfig.type == DataSourceConfig.API) // assume that auto start when queue is waiting
+            if (configuration.DataSourceConfig.type == DataSourceConfig.API && objDataHelper.dt_pending_messages.Rows.Count > 0) // assume that auto start when queue is waiting
             {
                 mainWorker(true);
             }
@@ -376,6 +378,10 @@ namespace WhatSender
         private void backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker worker = sender as BackgroundWorker;
+            if(objDataHelper.dt_pending_messages.Rows.Count ==0)
+            {
+                backgroundWorkerMain.ReportProgress(100);
+            }
 
             for (Int32 i = 0; i < objDataHelper.dt_pending_messages.Rows.Count;)
             {
@@ -467,7 +473,7 @@ namespace WhatSender
             {
                 //metroButtonStartStop.Text = "Start";
                 metroLabelStatus.Text = "Completed";
-                dumpDataToWaitingQueue();
+                
             }
         }
         private Boolean generaterandomBool()
@@ -583,18 +589,24 @@ namespace WhatSender
                     break;
                 }
                 //fetch logic will be here
-                
+
+               
+
                 worker.ReportProgress(10);
-                Thread.Sleep(Convert.ToInt16(configuration.WaitingConfig.lumpsum_delay) * 1000);
+                //Thread.Sleep(Convert.ToInt16(configuration.WaitingConfig.lumpsum_delay) * 1000);
+                Thread.Sleep(1 * 1000);
             }
         }
 
         private void backgroundWorkerFetchData_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             if (e.ProgressPercentage == 10)
-            {
-                frontEndLogs("worker:FetchData Status:CheckIn");
-                //dumpDataToWaitingQueue();
+            {                
+                if (objDataHelper.dt_pending_messages.Rows.Count == 0)
+                {
+                    frontEndLogs("worker:FetchData Status:CheckIn");
+                    dumpDataToWaitingQueue();
+                }
             }
             
         }

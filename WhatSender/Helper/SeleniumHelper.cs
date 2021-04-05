@@ -141,9 +141,9 @@ namespace WhatSender
         public Boolean SendImageOrVideo(WhatsApp whatsApp)
         {
             WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(waiting_time));
-            wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector(CLIP_BUTTON)));
             try
             {
+                wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector(CLIP_BUTTON)));            
                 Driver.FindElement(By.CssSelector(CLIP_BUTTON)).Click();
                 //Driver.FindElement(By.XPath(CLIP_BUTTON)).Click();//Web.whatsapp 'CLİP' button click
             }
@@ -157,11 +157,16 @@ namespace WhatSender
             }
             catch (NoSuchElementException)
             {
+                return false;
+            }
+            catch (Exception e)
+            {
+                return false;
             }
             //Thread.Sleep(3000);
-            wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath(VIDEO_OR_PICTURE)));
             try
             {
+                wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath(VIDEO_OR_PICTURE)));
                 Driver.FindElement(By.XPath(VIDEO_OR_PICTURE)).SendKeys(whatsApp.Attachment);//Web.whatsapp input image or video file path
                 wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath(IMAGE_SEND_BUTTON)));
                 Driver.FindElement(By.XPath(IMAGE_SEND_BUTTON)).Click();
@@ -184,9 +189,9 @@ namespace WhatSender
         public Boolean SendFile(WhatsApp whatsApp)
         {
             WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(waiting_time));
-            wait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector(CLIP_BUTTON)));
             try
             {
+                wait.Until(ExpectedConditions.ElementIsVisible(By.CssSelector(CLIP_BUTTON)));
                 Driver.FindElement(By.CssSelector(CLIP_BUTTON)).Click();
             }
             catch (ElementClickInterceptedException)
@@ -201,6 +206,11 @@ namespace WhatSender
             {
                 //Thread.Sleep(2000);
                 // FailedProcess++;
+                return false;
+            }
+            catch(Exception e)
+            {
+                return false;
             }
             //Thread.Sleep(3000);
             try
