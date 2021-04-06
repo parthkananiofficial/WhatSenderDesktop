@@ -24,6 +24,7 @@ namespace WhatSender
         DataHelper dataHelper = new DataHelper();
         public Boolean isSending = false;
         DataHelper objDataHelper;
+        //SeleniumHelperNew objSeleniumHelper;
         SeleniumHelper objSeleniumHelper;
         int ProcessCounter = 0;
         int sent = 0;
@@ -44,6 +45,7 @@ namespace WhatSender
             metroGridSent.DataSource = dataHelper.dt_sent_messages;
             isSending = false;
             objDataHelper = new DataHelper();
+            //objSeleniumHelper = new SeleniumHelperNew();
             objSeleniumHelper = new SeleniumHelper();
 
             if (configuration.DataSourceConfig.type == DataSourceConfig.API)
@@ -651,6 +653,16 @@ namespace WhatSender
                 objDataHelper.dt_sent_messages.WriteToCsvFile(saveFileDialog1.FileName);
                 MessageBox.Show("Export completed");
             }
+        }
+
+        private void grabGroupButton_Click(object sender, EventArgs e)
+        {
+            //objSeleniumHelper.getLogs();
+        }
+
+        private void metroButtonGrabGroup_Click(object sender, EventArgs e)
+        {
+            //objSeleniumHelper.getLogs();
         }
     }
 }

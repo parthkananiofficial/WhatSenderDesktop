@@ -1,16 +1,21 @@
-﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Firefox;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Net.Http;
+using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
 namespace WhatSender
 {
-    class SeleniumHelper
+    class SeleniumHelperNew
     {
         IWebDriver Driver;
         string MENU_BUTTON = "//*[@data-testid='menu']";
@@ -31,25 +36,46 @@ namespace WhatSender
         Boolean status;
         Boolean isLoggedIn = false;
         int waiting_time = 20;
-        public SeleniumHelper()
+        public SeleniumHelperNew()
         {
             //CreateSession();
         }
         public void CreateSession()
         {
-            var driverService = FirefoxDriverService.CreateDefaultService();
+            
+
+            var driverService = ChromeDriverService.CreateDefaultService();
             driverService.HideCommandPromptWindow = true;
             LogHelper.Write("Creating new session");
 
-            FirefoxOptions options = new FirefoxOptions();
-            options.LogLevel = FirefoxDriverLogLevel.Trace;
-                        
+
+            ChromeOptions options = new ChromeOptions();
+            options.SetLoggingPreference("performance", LogLevel.All);
 
             try
             {
-                Driver = new FirefoxDriver(driverService, options);
+                Driver = new ChromeDriver(driverService, options);
                 Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
                 Driver.Navigate().GoToUrl("https://web.whatsapp.com");
+            }
+            catch (Exception excp)
+            {
+                MessageBox.Show(excp.Message);
+            }
+        }
+
+
+        public void getLogs()
+        {
+            try
+            {
+                var logs = Driver.Manage().Logs.GetLog("performance");
+                foreach (var entry in logs)
+                {
+                    if(entry.Message.Contains("participants")) //this is for group only
+                        Console.WriteLine(entry.Message);
+                    //Console.WriteLine(entry.ToString());
+                }
             }
             catch (Exception excp)
             {
@@ -268,5 +294,13 @@ namespace WhatSender
             }
             return false;
         }
+        public void deduceContactsFromGroup(String message)
+        {
+
+        }
     }
+
+
+    
+
 }
