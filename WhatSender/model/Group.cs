@@ -7,51 +7,41 @@ using System.Threading.Tasks;
 
 namespace WhatSender.model
 {
+    public class Participant
+    {
+        [JsonProperty("id")]
+        public string Id { get; set; }
+
+        [JsonProperty("isAdmin")]
+        public bool IsAdmin { get; set; }
+
+        [JsonProperty("isSuperAdmin")]
+        public bool IsSuperAdmin { get; set; }
+    }
+
     public class Group
     {
+        [JsonProperty("id")]
+        public string Id { get; set; }
 
-        // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse); 
-        public class Response
-        {
-            [JsonProperty("mask")]
-            public bool Mask { get; set; }
+        [JsonProperty("owner")]
+        public string Owner { get; set; }
 
-            [JsonProperty("opcode")]
-            public int Opcode { get; set; }
+        [JsonProperty("subject")]
+        public string Subject { get; set; }
 
-            [JsonProperty("payloadData")]
-            public string PayloadData { get; set; }
-        }
+        [JsonProperty("creation")]
+        public int Creation { get; set; }
 
-        public class Params
-        {
-            [JsonProperty("requestId")]
-            public string RequestId { get; set; }
+        [JsonProperty("participants")]
+        public List<Participant> Participants { get; set; }
 
-            [JsonProperty("response")]
-            public Response Response { get; set; }
+        [JsonProperty("subjectTime")]
+        public int SubjectTime { get; set; }
 
-            [JsonProperty("timestamp")]
-            public double Timestamp { get; set; }
-        }
-
-        public class Message
-        {
-            [JsonProperty("method")]
-            public string Method { get; set; }
-
-            [JsonProperty("params")]
-            public Params Params { get; set; }
-        }
-
-        public class Root
-        {
-            [JsonProperty("message")]
-            public Message Message { get; set; }
-
-            [JsonProperty("webview")]
-            public string Webview { get; set; }
-        }
-
+        [JsonProperty("subjectOwner")]
+        public string SubjectOwner { get; set; }
     }
+
+
 }

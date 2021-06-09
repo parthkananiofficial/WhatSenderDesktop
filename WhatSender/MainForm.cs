@@ -1,4 +1,5 @@
 ﻿using LumenWorks.Framework.IO.Csv;
+using MetroFramework.Controls;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WhatSender.model;
 
 namespace WhatSender
 {
@@ -24,8 +26,8 @@ namespace WhatSender
         DataHelper dataHelper = new DataHelper();
         public Boolean isSending = false;
         DataHelper objDataHelper;
-        //SeleniumHelperNew objSeleniumHelper;
-        SeleniumHelper objSeleniumHelper;
+        SeleniumHelperNew objSeleniumHelper;
+        //SeleniumHelper objSeleniumHelper;
         int ProcessCounter = 0;
         int sent = 0;
         int failed = 0;
@@ -45,8 +47,8 @@ namespace WhatSender
             metroGridSent.DataSource = dataHelper.dt_sent_messages;
             isSending = false;
             objDataHelper = new DataHelper();
-            //objSeleniumHelper = new SeleniumHelperNew();
-            objSeleniumHelper = new SeleniumHelper();
+            objSeleniumHelper = new SeleniumHelperNew();
+            //objSeleniumHelper = new SeleniumHelper();
 
             if (configuration.DataSourceConfig.type == DataSourceConfig.API)
             {
@@ -100,7 +102,8 @@ namespace WhatSender
                     // open the file "data.csv" which is a CSV file with headers
                     using (CsvReader csv = new CsvReader(new StreamReader(filePath), true))
                     {
-                        dt_file_messages.Clear();
+                        //dt_file_messages.Clear();
+                        dt_file_messages = new DataTable();
                         dt_file_messages.Load(csv);
                     }
                     if (Convert.ToString(dt_file_messages.Columns[0]).ToLower() != "phone")
@@ -226,6 +229,31 @@ namespace WhatSender
                     return false;
             }
             
+        }
+
+        private Boolean groupWorker(bool action)
+        {
+            if (action)
+            {
+                if (backgroundWorkerGroup.IsBusy != true)
+                {
+                    backgroundWorkerGroup.RunWorkerAsync();
+                    frontEndLogs("worker:GroupFetch Status:Started");
+                    return true;
+                }
+                return false;
+            }
+            else
+            {
+                if (backgroundWorkerGroup.WorkerSupportsCancellation == true)
+                {
+                    backgroundWorkerGroup.CancelAsync();
+                    frontEndLogs("worker:GroupFetch Status:Stopped");
+                    return true;
+                }
+                else
+                    return true;
+            }
         }
 
         private void metroButtonSaveConfig_Click(object sender, EventArgs e)
@@ -525,6 +553,7 @@ namespace WhatSender
                     backgroundWorkerCheckLoggedIn.RunWorkerAsync();
                 }
             }
+            groupWorker(true);
         }
 
         private void backgroundWorkerCheckLoggedIn_DoWork(object sender, DoWorkEventArgs e)
@@ -662,7 +691,123 @@ namespace WhatSender
 
         private void metroButtonGrabGroup_Click(object sender, EventArgs e)
         {
-            //objSeleniumHelper.getLogs();
+            objSeleniumHelper.getLogs();
+        }
+
+        private void backgroundWorkerGroup_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = sender as BackgroundWorker;
+
+            while (true)
+            {
+                if (worker.CancellationPending == true)
+                {
+                    e.Cancel = true;
+                    break;
+                }
+
+                int groupCount = objSeleniumHelper.groups.Count();
+                int recipientCount = objSeleniumHelper.recipients.Count();
+                objSeleniumHelper.getLogs();
+                worker.ReportProgress(10);
+                if (groupCount != objSeleniumHelper.groups.Count() || recipientCount != objSeleniumHelper.recipients.Count())
+                {
+                    worker.ReportProgress(10);
+                }
+                Thread.Sleep(2000);
+            }
+        }
+
+        private void backgroundWorkerGroup_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {            
+            if (e.ProgressPercentage == 10)
+            {
+                metroLabelGroupCount.Text = objSeleniumHelper.groups.Count().ToString();
+                metroListViewGroup.Items.Clear();
+                foreach (Group group in objSeleniumHelper.groups)
+                {
+                    ListViewItem item = new ListViewItem();
+                    item.Text = group.Subject;
+                    item.SubItems.Add(group.Participants.Count().ToString());
+                    metroListViewGroup.Items.Add(item);
+                }
+
+                metroLabelRecepientCount.Text = objSeleniumHelper.recipients.Count().ToString();
+                metroListRecipient.Items.Clear();
+                foreach (Recipient recipient in objSeleniumHelper.recipients)
+                {
+                    ListViewItem item = new ListViewItem();
+                    item.Text = recipient.Id.Split('@')[0];
+                    metroListRecipient.Items.Add(item);
+                }
+            }        
+        }
+
+        private void metroListViewGroup_DoubleClick(object sender, EventArgs e)
+        {
+            String selectedGroupName = metroListViewGroup.SelectedItems[0].SubItems[0].Text;
+            foreach (Group group in objSeleniumHelper.groups)
+            {
+                if (group.Subject.Equals(selectedGroupName))
+                {
+                    //group.Participants
+                    SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+                    saveFileDialog1.InitialDirectory = @"C:\";
+                    saveFileDialog1.Title = "Save Group";
+                    saveFileDialog1.CheckFileExists = false;
+                    saveFileDialog1.CheckPathExists = true;
+                    saveFileDialog1.DefaultExt = "txt";
+                    saveFileDialog1.Filter = "CSV files (*.csv)|*.csv";
+                    saveFileDialog1.FilterIndex = 2;
+                    saveFileDialog1.RestoreDirectory = true;
+                    saveFileDialog1.FileName = selectedGroupName;
+                    if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                    {
+                        objDataHelper.dt_group.Clear();
+                        foreach (Participant participant in group.Participants)
+                        {
+                            DataRow dr = objDataHelper.dt_group.NewRow();
+                            dr[0] = participant.Id.Split('@')[0];
+                            objDataHelper.dt_group.Rows.Add(dr);
+                        }
+                        objDataHelper.dt_group.WriteToCsvFile(saveFileDialog1.FileName);
+                        MessageBox.Show("Group Export completed");
+                    }
+                }
+            }
+
+        }
+
+        private void metroListViewGroup_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void metroButtonExportRecipient_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.InitialDirectory = @"C:\";
+            saveFileDialog1.Title = "Save Recipients";
+            saveFileDialog1.CheckFileExists = false;
+            saveFileDialog1.CheckPathExists = true;
+            saveFileDialog1.DefaultExt = "txt";
+            saveFileDialog1.Filter = "CSV files (*.csv)|*.csv";
+            saveFileDialog1.FilterIndex = 2;
+            saveFileDialog1.RestoreDirectory = true;
+            saveFileDialog1.FileName = "WhatSender Recipient";
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                objDataHelper.dt_recipient.Clear();
+                List<Recipient> tempRecipients = new List<Recipient>(objSeleniumHelper.recipients);
+                foreach (Recipient recipient in tempRecipients)
+                {
+                    DataRow dr = objDataHelper.dt_recipient.NewRow();
+                    dr[0] = recipient.Id.Split('@')[0];
+                    objDataHelper.dt_recipient.Rows.Add(dr);
+                }
+                objDataHelper.dt_recipient.WriteToCsvFile(saveFileDialog1.FileName);
+                MessageBox.Show("Recipient Export completed");
+            }
         }
     }
 }
