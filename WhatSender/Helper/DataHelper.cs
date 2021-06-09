@@ -10,6 +10,8 @@ namespace WhatSender
     {
         public DataTable dt_pending_messages = new DataTable();
         public DataTable dt_sent_messages = new DataTable();
+        public DataTable dt_group = new DataTable();
+        public DataTable dt_recipient = new DataTable();
 
         public DataHelper()
         {            
@@ -32,6 +34,10 @@ namespace WhatSender
             dt_sent_messages.Columns.Add("Error");
             dt_sent_messages.Columns.Add("Time");
 
+
+            dt_group.Columns.Add("phone");
+            dt_recipient.Columns.Add("phone");
+
         }
         public string deduceMessage(DataTable master_datatable, DataRow dr, String str)
         {
@@ -41,7 +47,7 @@ namespace WhatSender
             }
             return str;
         }
-        
+
     }
     public static class DataTableExtensions
     {

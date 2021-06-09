@@ -114,6 +114,23 @@ namespace WhatSender
             this.htmlLabelTestAPIStatus = new MetroFramework.Drawing.Html.HtmlLabel();
             this.metroButtonSaveConfig = new MetroFramework.Controls.MetroButton();
             this.metroTabControl = new MetroFramework.Controls.MetroTabControl();
+            this.metroTabPage3 = new MetroFramework.Controls.MetroTabPage();
+            this.metroPanel4 = new MetroFramework.Controls.MetroPanel();
+            this.metroLabel15 = new MetroFramework.Controls.MetroLabel();
+            this.metroLabel14 = new MetroFramework.Controls.MetroLabel();
+            this.metroLabel13 = new MetroFramework.Controls.MetroLabel();
+            this.metroLabel12 = new MetroFramework.Controls.MetroLabel();
+            this.metroButtonExportRecipient = new MetroFramework.Controls.MetroButton();
+            this.metroLabelRecepientCount = new MetroFramework.Controls.MetroLabel();
+            this.metroLabelGroupCount = new MetroFramework.Controls.MetroLabel();
+            this.metroLabel11 = new MetroFramework.Controls.MetroLabel();
+            this.metroLabel10 = new MetroFramework.Controls.MetroLabel();
+            this.metroListRecipient = new MetroFramework.Controls.MetroListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.metroListViewGroup = new MetroFramework.Controls.MetroListView();
+            this.columnName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnMember = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.backgroundWorkerGroup = new System.ComponentModel.BackgroundWorker();
             ((System.ComponentModel.ISupportInitialize)(this.metroStyleManager1)).BeginInit();
             this.metroTabPage1.SuspendLayout();
             this.tableLayoutPanel6.SuspendLayout();
@@ -142,6 +159,8 @@ namespace WhatSender
             this.groupBox1.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
             this.metroTabControl.SuspendLayout();
+            this.metroTabPage3.SuspendLayout();
+            this.metroPanel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // metroStyleManager1
@@ -1311,12 +1330,201 @@ namespace WhatSender
             // 
             this.metroTabControl.Controls.Add(this.metroTabPage2);
             this.metroTabControl.Controls.Add(this.metroTabPage1);
+            this.metroTabControl.Controls.Add(this.metroTabPage3);
             this.metroTabControl.Location = new System.Drawing.Point(20, 60);
             this.metroTabControl.Name = "metroTabControl";
-            this.metroTabControl.SelectedIndex = 1;
+            this.metroTabControl.SelectedIndex = 0;
             this.metroTabControl.Size = new System.Drawing.Size(1079, 608);
+            this.metroTabControl.Style = MetroFramework.MetroColorStyle.Green;
             this.metroTabControl.TabIndex = 1;
             this.metroTabControl.UseSelectable = true;
+            // 
+            // metroTabPage3
+            // 
+            this.metroTabPage3.Controls.Add(this.metroPanel4);
+            this.metroTabPage3.HorizontalScrollbarBarColor = true;
+            this.metroTabPage3.HorizontalScrollbarHighlightOnWheel = false;
+            this.metroTabPage3.HorizontalScrollbarSize = 10;
+            this.metroTabPage3.Location = new System.Drawing.Point(4, 38);
+            this.metroTabPage3.Name = "metroTabPage3";
+            this.metroTabPage3.Size = new System.Drawing.Size(1071, 566);
+            this.metroTabPage3.TabIndex = 2;
+            this.metroTabPage3.Text = "Groups && Recipients";
+            this.metroTabPage3.VerticalScrollbarBarColor = true;
+            this.metroTabPage3.VerticalScrollbarHighlightOnWheel = false;
+            this.metroTabPage3.VerticalScrollbarSize = 10;
+            // 
+            // metroPanel4
+            // 
+            this.metroPanel4.Controls.Add(this.metroLabel15);
+            this.metroPanel4.Controls.Add(this.metroLabel14);
+            this.metroPanel4.Controls.Add(this.metroLabel13);
+            this.metroPanel4.Controls.Add(this.metroLabel12);
+            this.metroPanel4.Controls.Add(this.metroButtonExportRecipient);
+            this.metroPanel4.Controls.Add(this.metroLabelRecepientCount);
+            this.metroPanel4.Controls.Add(this.metroLabelGroupCount);
+            this.metroPanel4.Controls.Add(this.metroLabel11);
+            this.metroPanel4.Controls.Add(this.metroLabel10);
+            this.metroPanel4.Controls.Add(this.metroListRecipient);
+            this.metroPanel4.Controls.Add(this.metroListViewGroup);
+            this.metroPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.metroPanel4.HorizontalScrollbarBarColor = true;
+            this.metroPanel4.HorizontalScrollbarHighlightOnWheel = false;
+            this.metroPanel4.HorizontalScrollbarSize = 10;
+            this.metroPanel4.Location = new System.Drawing.Point(0, 0);
+            this.metroPanel4.Name = "metroPanel4";
+            this.metroPanel4.Size = new System.Drawing.Size(1071, 566);
+            this.metroPanel4.TabIndex = 2;
+            this.metroPanel4.VerticalScrollbarBarColor = true;
+            this.metroPanel4.VerticalScrollbarHighlightOnWheel = false;
+            this.metroPanel4.VerticalScrollbarSize = 10;
+            // 
+            // metroLabel15
+            // 
+            this.metroLabel15.AutoSize = true;
+            this.metroLabel15.Location = new System.Drawing.Point(759, 533);
+            this.metroLabel15.Name = "metroLabel15";
+            this.metroLabel15.Size = new System.Drawing.Size(241, 19);
+            this.metroLabel15.TabIndex = 14;
+            this.metroLabel15.Text = "* Idea of this Page given by \'bglobalsas\'";
+            // 
+            // metroLabel14
+            // 
+            this.metroLabel14.AutoSize = true;
+            this.metroLabel14.Location = new System.Drawing.Point(799, 502);
+            this.metroLabel14.Name = "metroLabel14";
+            this.metroLabel14.Size = new System.Drawing.Size(165, 19);
+            this.metroLabel14.TabIndex = 13;
+            this.metroLabel14.Text = "-----  Special Thanks -----";
+            // 
+            // metroLabel13
+            // 
+            this.metroLabel13.AutoSize = true;
+            this.metroLabel13.Location = new System.Drawing.Point(710, 230);
+            this.metroLabel13.Name = "metroLabel13";
+            this.metroLabel13.Size = new System.Drawing.Size(351, 114);
+            this.metroLabel13.TabIndex = 12;
+            this.metroLabel13.Text = "1.  Groups and Recipients will auto fetch from your account\r\n     once you logged" +
+    " in.\r\n\r\n2.  Refresh your page and scroll down to get all Groups.\r\n\r\n3. Double cl" +
+    "ick on Group to Save it to CSV File.";
+            // 
+            // metroLabel12
+            // 
+            this.metroLabel12.AutoSize = true;
+            this.metroLabel12.FontSize = MetroFramework.MetroLabelSize.Tall;
+            this.metroLabel12.Location = new System.Drawing.Point(775, 193);
+            this.metroLabel12.Name = "metroLabel12";
+            this.metroLabel12.Size = new System.Drawing.Size(189, 25);
+            this.metroLabel12.TabIndex = 11;
+            this.metroLabel12.Text = "--------- Help ? --------";
+            // 
+            // metroButtonExportRecipient
+            // 
+            this.metroButtonExportRecipient.Location = new System.Drawing.Point(621, 25);
+            this.metroButtonExportRecipient.Name = "metroButtonExportRecipient";
+            this.metroButtonExportRecipient.Size = new System.Drawing.Size(75, 23);
+            this.metroButtonExportRecipient.TabIndex = 10;
+            this.metroButtonExportRecipient.Text = "Export";
+            this.metroButtonExportRecipient.UseSelectable = true;
+            this.metroButtonExportRecipient.Click += new System.EventHandler(this.metroButtonExportRecipient_Click);
+            // 
+            // metroLabelRecepientCount
+            // 
+            this.metroLabelRecepientCount.AutoSize = true;
+            this.metroLabelRecepientCount.Location = new System.Drawing.Point(500, 32);
+            this.metroLabelRecepientCount.Name = "metroLabelRecepientCount";
+            this.metroLabelRecepientCount.Size = new System.Drawing.Size(16, 19);
+            this.metroLabelRecepientCount.TabIndex = 9;
+            this.metroLabelRecepientCount.Text = "0";
+            // 
+            // metroLabelGroupCount
+            // 
+            this.metroLabelGroupCount.AutoSize = true;
+            this.metroLabelGroupCount.Location = new System.Drawing.Point(84, 30);
+            this.metroLabelGroupCount.Name = "metroLabelGroupCount";
+            this.metroLabelGroupCount.Size = new System.Drawing.Size(16, 19);
+            this.metroLabelGroupCount.TabIndex = 8;
+            this.metroLabelGroupCount.Text = "0";
+            // 
+            // metroLabel11
+            // 
+            this.metroLabel11.AutoSize = true;
+            this.metroLabel11.Location = new System.Drawing.Point(403, 32);
+            this.metroLabel11.Name = "metroLabel11";
+            this.metroLabel11.Size = new System.Drawing.Size(78, 19);
+            this.metroLabel11.TabIndex = 7;
+            this.metroLabel11.Text = "Recipients : ";
+            // 
+            // metroLabel10
+            // 
+            this.metroLabel10.AutoSize = true;
+            this.metroLabel10.Location = new System.Drawing.Point(18, 29);
+            this.metroLabel10.Name = "metroLabel10";
+            this.metroLabel10.Size = new System.Drawing.Size(62, 19);
+            this.metroLabel10.TabIndex = 6;
+            this.metroLabel10.Text = "Groups : ";
+            // 
+            // metroListRecipient
+            // 
+            this.metroListRecipient.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1});
+            this.metroListRecipient.Font = new System.Drawing.Font("Segoe UI", 12F);
+            this.metroListRecipient.FullRowSelect = true;
+            this.metroListRecipient.GridLines = true;
+            this.metroListRecipient.Location = new System.Drawing.Point(403, 54);
+            this.metroListRecipient.MultiSelect = false;
+            this.metroListRecipient.Name = "metroListRecipient";
+            this.metroListRecipient.OwnerDraw = true;
+            this.metroListRecipient.Size = new System.Drawing.Size(293, 500);
+            this.metroListRecipient.Style = MetroFramework.MetroColorStyle.Green;
+            this.metroListRecipient.TabIndex = 5;
+            this.metroListRecipient.UseCompatibleStateImageBehavior = false;
+            this.metroListRecipient.UseSelectable = true;
+            this.metroListRecipient.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Number";
+            this.columnHeader1.Width = 287;
+            // 
+            // metroListViewGroup
+            // 
+            this.metroListViewGroup.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnName,
+            this.columnMember});
+            this.metroListViewGroup.Font = new System.Drawing.Font("Segoe UI", 12F);
+            this.metroListViewGroup.FullRowSelect = true;
+            this.metroListViewGroup.GridLines = true;
+            this.metroListViewGroup.Location = new System.Drawing.Point(20, 54);
+            this.metroListViewGroup.MultiSelect = false;
+            this.metroListViewGroup.Name = "metroListViewGroup";
+            this.metroListViewGroup.OwnerDraw = true;
+            this.metroListViewGroup.Size = new System.Drawing.Size(356, 500);
+            this.metroListViewGroup.Style = MetroFramework.MetroColorStyle.Green;
+            this.metroListViewGroup.TabIndex = 4;
+            this.metroListViewGroup.UseCompatibleStateImageBehavior = false;
+            this.metroListViewGroup.UseSelectable = true;
+            this.metroListViewGroup.View = System.Windows.Forms.View.Details;
+            this.metroListViewGroup.SelectedIndexChanged += new System.EventHandler(this.metroListViewGroup_SelectedIndexChanged);
+            this.metroListViewGroup.DoubleClick += new System.EventHandler(this.metroListViewGroup_DoubleClick);
+            // 
+            // columnName
+            // 
+            this.columnName.Text = "Name";
+            this.columnName.Width = 250;
+            // 
+            // columnMember
+            // 
+            this.columnMember.Text = "Members";
+            this.columnMember.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.columnMember.Width = 100;
+            // 
+            // backgroundWorkerGroup
+            // 
+            this.backgroundWorkerGroup.WorkerReportsProgress = true;
+            this.backgroundWorkerGroup.WorkerSupportsCancellation = true;
+            this.backgroundWorkerGroup.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerGroup_DoWork);
+            this.backgroundWorkerGroup.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorkerGroup_ProgressChanged);
             // 
             // MainForm
             // 
@@ -1370,6 +1578,9 @@ namespace WhatSender
             this.groupBox1.PerformLayout();
             this.tableLayoutPanel4.ResumeLayout(false);
             this.metroTabControl.ResumeLayout(false);
+            this.metroTabPage3.ResumeLayout(false);
+            this.metroPanel4.ResumeLayout(false);
+            this.metroPanel4.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1456,5 +1667,22 @@ namespace WhatSender
         public MetroFramework.Drawing.Html.HtmlLabel htmlLabelTestAPIStatus;
         private MetroFramework.Controls.MetroButton metroButtonSaveConfig;
         private MetroFramework.Controls.MetroTabControl metroTabControl;
+        private MetroFramework.Controls.MetroTabPage metroTabPage3;
+        private System.ComponentModel.BackgroundWorker backgroundWorkerGroup;
+        private MetroFramework.Controls.MetroPanel metroPanel4;
+        private MetroFramework.Controls.MetroListView metroListViewGroup;
+        private System.Windows.Forms.ColumnHeader columnName;
+        private System.Windows.Forms.ColumnHeader columnMember;
+        private MetroFramework.Controls.MetroLabel metroLabelRecepientCount;
+        private MetroFramework.Controls.MetroLabel metroLabelGroupCount;
+        private MetroFramework.Controls.MetroLabel metroLabel11;
+        private MetroFramework.Controls.MetroLabel metroLabel10;
+        private MetroFramework.Controls.MetroListView metroListRecipient;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
+        private MetroFramework.Controls.MetroButton metroButtonExportRecipient;
+        private MetroFramework.Controls.MetroLabel metroLabel15;
+        private MetroFramework.Controls.MetroLabel metroLabel14;
+        private MetroFramework.Controls.MetroLabel metroLabel13;
+        private MetroFramework.Controls.MetroLabel metroLabel12;
     }
 }
