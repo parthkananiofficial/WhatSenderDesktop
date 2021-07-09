@@ -33,16 +33,16 @@ namespace WhatSender
         string VIDEO_OR_PICTURE_BUTTON = "//*[@data-testid='attach-image']";
 
         //document send
-        string FILE_SEND_BUTTON = "/html/body/div/div/div/div[2]/div[2]/span/div/span/div/div/div[2]/span/div/div";
+        string FILE_SEND_BUTTON = "/html/body/div/div[1]/div[1]/div[2]/div[2]/span/div[1]/span/div[1]/div/div[2]/span/div";
         string DOCUMENT_FILE_Xpath = "/html/body/div/div[1]/div[1]/div[4]/div[1]/footer/div[1]/div[1]/div[2]/div/span/div[1]/div/ul/li[3]/button/input";
 
 
         //image send
-        string IMAGE_SEND_BUTTON = "/html/body/div/div/div/div[2]/div[2]/span/div/span/div/div/div[2]/span/div";        
-        string VIDEO_OR_PICTURE_FILE = "/html/body/div/div/div/div[4]/div/footer/div[1]/div[1]/div[2]/div/span/div/div/ul/li[1]/button/input";        
+        string IMAGE_SEND_BUTTON = "/html/body/div/div[1]/div[1]/div[2]/div[2]/span/div[1]/span/div[1]/div/div[2]/span/div";   
+        string VIDEO_OR_PICTURE_FILE = "/html/body/div/div[1]/div[1]/div[4]/div[1]/footer/div[1]/div[1]/div[2]/div/span/div[1]/div/ul/li[1]/button/input";        
 
         //text send
-        string SEND_BUTTON = "/html/body/div/div/div/div[4]/div/footer/div[1]/div[3]/button";
+        string SEND_BUTTON = "/html/body/div/div[1]/div[1]/div[4]/div[1]/footer/div[1]/div[2]/div/div[2]/button";
 
 
         Boolean status;
