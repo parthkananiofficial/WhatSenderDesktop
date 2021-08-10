@@ -38,7 +38,8 @@ namespace WhatSender
 
 
         //image send
-        string IMAGE_SEND_BUTTON = "/html/body/div/div[1]/div[1]/div[2]/div[2]/span/div[1]/span/div[1]/div/div[2]/span/div";   
+        string IMAGE_SEND_BUTTON = "/html/body/div/div[1]/div[1]/div[2]/div[2]/span/div[1]/span/div[1]/div/div[2]/div/div[2]/div[2]/div";   
+        //string IMAGE_SEND_BUTTON = "/html/body/div/div[1]/div[1]/div[2]/div[2]/span/div[1]/span/div[1]/div/div[2]/span/div";   
         string VIDEO_OR_PICTURE_FILE = "/html/body/div/div[1]/div[1]/div[4]/div[1]/footer/div[1]/div[1]/div[2]/div/span/div[1]/div/ul/li[1]/button/input";        
 
         //text send
