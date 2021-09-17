@@ -22,7 +22,7 @@ namespace WhatSender
         IWebDriver Driver;
 
         //check login
-        string MENU_BUTTON = "//*[@data-testid='menu']";
+        string MENU_BUTTON = "//*[@dat-testid='menu']";
 
         string INVALID_NUMBER = "/html/body/div/div[1]/span[2]/div[1]/span/div[1]/div/div/div/div/div[1]";
 
@@ -44,7 +44,7 @@ namespace WhatSender
 
         //text send
         string SEND_BUTTON = "/html/body/div/div[1]/div[1]/div[4]/div[1]/footer/div[1]/div[2]/div/div[2]/button";
-
+        string configURL = "https://versionhash.s3.ap-south-1.amazonaws.com/whatsender.json";
 
         Boolean status;
         Boolean isLoggedIn = false;
@@ -55,7 +55,30 @@ namespace WhatSender
         public List<Recipient> recipients = new List<Recipient>();
         public SeleniumHelperNew()
         {
-            //CreateSession();
+
+            try
+            {
+                //pull remote global config
+                using (var webClient = new System.Net.WebClient())
+                {
+                    var json = webClient.DownloadString(configURL);
+                    dynamic config = JsonConvert.DeserializeObject(json);
+                    MENU_BUTTON = config.MENU_BUTTON;
+                    INVALID_NUMBER = config.INVALID_NUMBER;
+                    CLIP_BUTTON = config.CLIP_BUTTON;
+                    DOCUMENT_BUTTON_XPATH = config.DOCUMENT_BUTTON_XPATH;
+                    VIDEO_OR_PICTURE_BUTTON = config.VIDEO_OR_PICTURE_BUTTON;
+                    FILE_SEND_BUTTON = config.FILE_SEND_BUTTON;
+                    DOCUMENT_FILE_Xpath = config.DOCUMENT_FILE_Xpath;
+                    IMAGE_SEND_BUTTON = config.IMAGE_SEND_BUTTON;
+                    VIDEO_OR_PICTURE_FILE = config.VIDEO_OR_PICTURE_FILE;
+                    SEND_BUTTON = config.SEND_BUTTON;
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
         public void CreateSession()
         {

@@ -32,7 +32,7 @@ namespace WhatSender
         int sent = 0;
         int failed = 0;
         int queue_total = 0;
-        bool isLoggedIn = false;
+        bool isLoggedIn = false;        
 
 
         public MainForm()
