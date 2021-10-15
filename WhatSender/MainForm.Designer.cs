@@ -41,24 +41,15 @@ namespace WhatSender
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.metroStyleManager1 = new MetroFramework.Components.MetroStyleManager(this.components);
-            this.backgroundWorkerMain = new System.ComponentModel.BackgroundWorker();
             this.openFileDialogFileUpload = new System.Windows.Forms.OpenFileDialog();
             this.openFileDialogAttachment = new System.Windows.Forms.OpenFileDialog();
             this.metroButtonLogin = new MetroFramework.Controls.MetroButton();
-            this.backgroundWorkerCheckLoggedIn = new System.ComponentModel.BackgroundWorker();
             this.richTextBoxLogs = new System.Windows.Forms.RichTextBox();
             this.metroLabelLogsLabel = new MetroFramework.Controls.MetroLabel();
             this.backgroundWorkerFetchData = new System.ComponentModel.BackgroundWorker();
             this.metroLabel8 = new MetroFramework.Controls.MetroLabel();
             this.metroTabPage1 = new MetroFramework.Controls.MetroTabPage();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
-            this.metroPanelPending = new MetroFramework.Controls.MetroPanel();
-            this.metroTileSent = new MetroFramework.Controls.MetroTile();
-            this.metroTileFailed = new MetroFramework.Controls.MetroTile();
-            this.metroTileTotalFailed = new MetroFramework.Controls.MetroTile();
-            this.metroTileTotalSent = new MetroFramework.Controls.MetroTile();
-            this.metroTilePending = new MetroFramework.Controls.MetroTile();
-            this.metroPanel2 = new MetroFramework.Controls.MetroPanel();
             this.metroGridSent = new MetroFramework.Controls.MetroGrid();
             this.metroGridPending = new MetroFramework.Controls.MetroGrid();
             this.metroPanel1 = new MetroFramework.Controls.MetroPanel();
@@ -69,6 +60,25 @@ namespace WhatSender
             this.metroLabelStatusHeader = new MetroFramework.Controls.MetroLabel();
             this.metroLabel2 = new MetroFramework.Controls.MetroLabel();
             this.metroLabel3 = new MetroFramework.Controls.MetroLabel();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.tableLayoutPanel8 = new System.Windows.Forms.TableLayoutPanel();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.lblSuccess = new System.Windows.Forms.Label();
+            this.metroLabel9 = new MetroFramework.Controls.MetroLabel();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.lblFailed = new System.Windows.Forms.Label();
+            this.metroLabel13 = new MetroFramework.Controls.MetroLabel();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.lblPending = new System.Windows.Forms.Label();
+            this.metroLabel12 = new MetroFramework.Controls.MetroLabel();
+            this.panel6 = new System.Windows.Forms.Panel();
+            this.tableLayoutPanel9 = new System.Windows.Forms.TableLayoutPanel();
+            this.panel7 = new System.Windows.Forms.Panel();
+            this.lblTotalSuccess = new System.Windows.Forms.Label();
+            this.metroLabel14 = new MetroFramework.Controls.MetroLabel();
+            this.panel8 = new System.Windows.Forms.Panel();
+            this.lblTotalFailed = new System.Windows.Forms.Label();
+            this.metroLabel15 = new MetroFramework.Controls.MetroLabel();
             this.metroTabPage2 = new MetroFramework.Controls.MetroTabPage();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
@@ -116,29 +126,42 @@ namespace WhatSender
             this.metroTabControl = new MetroFramework.Controls.MetroTabControl();
             this.metroTabPage3 = new MetroFramework.Controls.MetroTabPage();
             this.metroPanel4 = new MetroFramework.Controls.MetroPanel();
-            this.metroLabel15 = new MetroFramework.Controls.MetroLabel();
-            this.metroLabel14 = new MetroFramework.Controls.MetroLabel();
-            this.metroLabel13 = new MetroFramework.Controls.MetroLabel();
-            this.metroLabel12 = new MetroFramework.Controls.MetroLabel();
+            this.btnExportGroups = new MetroFramework.Controls.MetroButton();
+            this.ToolStripStatusLabel3 = new MetroFramework.Controls.MetroLabel();
+            this.metroButtonRefreshGroups = new MetroFramework.Controls.MetroButton();
             this.metroButtonExportRecipient = new MetroFramework.Controls.MetroButton();
-            this.metroLabelRecepientCount = new MetroFramework.Controls.MetroLabel();
+            this.metroLabelRecipientCount = new MetroFramework.Controls.MetroLabel();
             this.metroLabelGroupCount = new MetroFramework.Controls.MetroLabel();
             this.metroLabel11 = new MetroFramework.Controls.MetroLabel();
             this.metroLabel10 = new MetroFramework.Controls.MetroLabel();
             this.metroListRecipient = new MetroFramework.Controls.MetroListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnNumber = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.metroListViewGroup = new MetroFramework.Controls.MetroListView();
             this.columnName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnMember = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.backgroundWorkerGroup = new System.ComponentModel.BackgroundWorker();
+            this.timerWorkerMain = new System.Windows.Forms.Timer(this.components);
+            this.timerDataFetch = new System.Windows.Forms.Timer(this.components);
+            this.lblReady = new MetroFramework.Controls.MetroLabel();
+            this.cbShowLogs = new System.Windows.Forms.CheckBox();
+            this.backgroundWorkerMain = new WhatSender.AbortableBackgroundWorker();
+            this.backgroundWorkerUpdateTiles = new WhatSender.AbortableBackgroundWorker();
             ((System.ComponentModel.ISupportInitialize)(this.metroStyleManager1)).BeginInit();
             this.metroTabPage1.SuspendLayout();
             this.tableLayoutPanel6.SuspendLayout();
-            this.metroPanelPending.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.metroGridSent)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.metroGridPending)).BeginInit();
             this.metroPanel1.SuspendLayout();
             this.metroPanel3.SuspendLayout();
+            this.panel2.SuspendLayout();
+            this.tableLayoutPanel8.SuspendLayout();
+            this.panel3.SuspendLayout();
+            this.panel4.SuspendLayout();
+            this.panel5.SuspendLayout();
+            this.panel6.SuspendLayout();
+            this.tableLayoutPanel9.SuspendLayout();
+            this.panel7.SuspendLayout();
+            this.panel8.SuspendLayout();
             this.metroTabPage2.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -169,14 +192,6 @@ namespace WhatSender
             this.metroStyleManager1.Style = MetroFramework.MetroColorStyle.Green;
             this.metroStyleManager1.Theme = MetroFramework.MetroThemeStyle.Dark;
             // 
-            // backgroundWorkerMain
-            // 
-            this.backgroundWorkerMain.WorkerReportsProgress = true;
-            this.backgroundWorkerMain.WorkerSupportsCancellation = true;
-            this.backgroundWorkerMain.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker_DoWork);
-            this.backgroundWorkerMain.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker_ProgressChanged);
-            this.backgroundWorkerMain.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorkerMain_RunWorkerCompleted);
-            // 
             // openFileDialogFileUpload
             // 
             this.openFileDialogFileUpload.FileName = "openFileDialog1";
@@ -187,21 +202,14 @@ namespace WhatSender
             // 
             // metroButtonLogin
             // 
-            this.metroButtonLogin.Location = new System.Drawing.Point(1017, 42);
+            this.metroButtonLogin.Location = new System.Drawing.Point(937, 34);
             this.metroButtonLogin.Name = "metroButtonLogin";
-            this.metroButtonLogin.Size = new System.Drawing.Size(75, 23);
+            this.metroButtonLogin.Size = new System.Drawing.Size(155, 23);
             this.metroButtonLogin.TabIndex = 2;
-            this.metroButtonLogin.Text = "Login";
+            this.metroButtonLogin.Text = "Open WhatsApp";
             this.metroButtonLogin.UseSelectable = true;
             this.metroButtonLogin.EnabledChanged += new System.EventHandler(this.metroButtonLogin_EnabledChanged);
             this.metroButtonLogin.Click += new System.EventHandler(this.metroButtonLogin_Click);
-            // 
-            // backgroundWorkerCheckLoggedIn
-            // 
-            this.backgroundWorkerCheckLoggedIn.WorkerReportsProgress = true;
-            this.backgroundWorkerCheckLoggedIn.WorkerSupportsCancellation = true;
-            this.backgroundWorkerCheckLoggedIn.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerCheckLoggedIn_DoWork);
-            this.backgroundWorkerCheckLoggedIn.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorkerCheckLoggedIn_RunWorkerCompleted);
             // 
             // richTextBoxLogs
             // 
@@ -257,14 +265,14 @@ namespace WhatSender
             this.tableLayoutPanel6.ColumnCount = 2;
             this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60.78431F));
             this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 39.21569F));
-            this.tableLayoutPanel6.Controls.Add(this.metroPanelPending, 1, 1);
-            this.tableLayoutPanel6.Controls.Add(this.metroPanel2, 1, 3);
             this.tableLayoutPanel6.Controls.Add(this.metroGridSent, 0, 3);
             this.tableLayoutPanel6.Controls.Add(this.metroGridPending, 0, 1);
             this.tableLayoutPanel6.Controls.Add(this.metroPanel1, 1, 4);
             this.tableLayoutPanel6.Controls.Add(this.metroPanel3, 0, 4);
             this.tableLayoutPanel6.Controls.Add(this.metroLabel2, 0, 0);
             this.tableLayoutPanel6.Controls.Add(this.metroLabel3, 0, 2);
+            this.tableLayoutPanel6.Controls.Add(this.panel2, 1, 3);
+            this.tableLayoutPanel6.Controls.Add(this.panel6, 1, 1);
             this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel6.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel6.Name = "tableLayoutPanel6";
@@ -276,94 +284,6 @@ namespace WhatSender
             this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 44F));
             this.tableLayoutPanel6.Size = new System.Drawing.Size(1071, 566);
             this.tableLayoutPanel6.TabIndex = 2;
-            // 
-            // metroPanelPending
-            // 
-            this.metroPanelPending.Controls.Add(this.metroTileSent);
-            this.metroPanelPending.Controls.Add(this.metroTileFailed);
-            this.metroPanelPending.Controls.Add(this.metroTileTotalFailed);
-            this.metroPanelPending.Controls.Add(this.metroTileTotalSent);
-            this.metroPanelPending.Controls.Add(this.metroTilePending);
-            this.metroPanelPending.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.metroPanelPending.HorizontalScrollbarBarColor = true;
-            this.metroPanelPending.HorizontalScrollbarHighlightOnWheel = false;
-            this.metroPanelPending.HorizontalScrollbarSize = 10;
-            this.metroPanelPending.Location = new System.Drawing.Point(653, 23);
-            this.metroPanelPending.Name = "metroPanelPending";
-            this.metroPanelPending.Size = new System.Drawing.Size(415, 233);
-            this.metroPanelPending.TabIndex = 0;
-            this.metroPanelPending.VerticalScrollbarBarColor = true;
-            this.metroPanelPending.VerticalScrollbarHighlightOnWheel = false;
-            this.metroPanelPending.VerticalScrollbarSize = 10;
-            // 
-            // metroTileSent
-            // 
-            this.metroTileSent.ActiveControl = null;
-            this.metroTileSent.Location = new System.Drawing.Point(4, 107);
-            this.metroTileSent.Name = "metroTileSent";
-            this.metroTileSent.Size = new System.Drawing.Size(140, 93);
-            this.metroTileSent.Style = MetroFramework.MetroColorStyle.Lime;
-            this.metroTileSent.TabIndex = 3;
-            this.metroTileSent.Text = "Success";
-            this.metroTileSent.UseSelectable = true;
-            // 
-            // metroTileFailed
-            // 
-            this.metroTileFailed.ActiveControl = null;
-            this.metroTileFailed.Location = new System.Drawing.Point(150, 107);
-            this.metroTileFailed.Name = "metroTileFailed";
-            this.metroTileFailed.Size = new System.Drawing.Size(121, 93);
-            this.metroTileFailed.Style = MetroFramework.MetroColorStyle.Yellow;
-            this.metroTileFailed.TabIndex = 2;
-            this.metroTileFailed.Text = "Failed";
-            this.metroTileFailed.UseSelectable = true;
-            // 
-            // metroTileTotalFailed
-            // 
-            this.metroTileTotalFailed.ActiveControl = null;
-            this.metroTileTotalFailed.Location = new System.Drawing.Point(210, 3);
-            this.metroTileTotalFailed.Name = "metroTileTotalFailed";
-            this.metroTileTotalFailed.Size = new System.Drawing.Size(200, 98);
-            this.metroTileTotalFailed.Style = MetroFramework.MetroColorStyle.Yellow;
-            this.metroTileTotalFailed.TabIndex = 6;
-            this.metroTileTotalFailed.Text = "Total Failed";
-            this.metroTileTotalFailed.UseSelectable = true;
-            // 
-            // metroTileTotalSent
-            // 
-            this.metroTileTotalSent.ActiveControl = null;
-            this.metroTileTotalSent.Location = new System.Drawing.Point(4, 3);
-            this.metroTileTotalSent.Name = "metroTileTotalSent";
-            this.metroTileTotalSent.Size = new System.Drawing.Size(200, 98);
-            this.metroTileTotalSent.Style = MetroFramework.MetroColorStyle.Lime;
-            this.metroTileTotalSent.TabIndex = 5;
-            this.metroTileTotalSent.Text = "Total Success";
-            this.metroTileTotalSent.UseSelectable = true;
-            // 
-            // metroTilePending
-            // 
-            this.metroTilePending.ActiveControl = null;
-            this.metroTilePending.Location = new System.Drawing.Point(277, 107);
-            this.metroTilePending.Name = "metroTilePending";
-            this.metroTilePending.Size = new System.Drawing.Size(133, 93);
-            this.metroTilePending.Style = MetroFramework.MetroColorStyle.Silver;
-            this.metroTilePending.TabIndex = 4;
-            this.metroTilePending.Text = "Pending";
-            this.metroTilePending.UseSelectable = true;
-            // 
-            // metroPanel2
-            // 
-            this.metroPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.metroPanel2.HorizontalScrollbarBarColor = true;
-            this.metroPanel2.HorizontalScrollbarHighlightOnWheel = false;
-            this.metroPanel2.HorizontalScrollbarSize = 10;
-            this.metroPanel2.Location = new System.Drawing.Point(653, 286);
-            this.metroPanel2.Name = "metroPanel2";
-            this.metroPanel2.Size = new System.Drawing.Size(415, 233);
-            this.metroPanel2.TabIndex = 1;
-            this.metroPanel2.VerticalScrollbarBarColor = true;
-            this.metroPanel2.VerticalScrollbarHighlightOnWheel = false;
-            this.metroPanel2.VerticalScrollbarSize = 10;
             // 
             // metroGridSent
             // 
@@ -482,7 +402,6 @@ namespace WhatSender
             // metroButtonStartStop
             // 
             this.metroButtonStartStop.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.metroButtonStartStop.Enabled = false;
             this.metroButtonStartStop.Location = new System.Drawing.Point(0, 0);
             this.metroButtonStartStop.Name = "metroButtonStartStop";
             this.metroButtonStartStop.Size = new System.Drawing.Size(124, 38);
@@ -554,6 +473,238 @@ namespace WhatSender
             this.metroLabel3.Size = new System.Drawing.Size(126, 19);
             this.metroLabel3.TabIndex = 7;
             this.metroLabel3.Text = "Completed Records";
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.tableLayoutPanel8);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(653, 286);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(415, 233);
+            this.panel2.TabIndex = 8;
+            // 
+            // tableLayoutPanel8
+            // 
+            this.tableLayoutPanel8.ColumnCount = 2;
+            this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.12048F));
+            this.tableLayoutPanel8.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 49.87952F));
+            this.tableLayoutPanel8.Controls.Add(this.panel3, 0, 0);
+            this.tableLayoutPanel8.Controls.Add(this.panel4, 1, 0);
+            this.tableLayoutPanel8.Controls.Add(this.panel5, 0, 1);
+            this.tableLayoutPanel8.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel8.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel8.Name = "tableLayoutPanel8";
+            this.tableLayoutPanel8.RowCount = 3;
+            this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
+            this.tableLayoutPanel8.Size = new System.Drawing.Size(415, 233);
+            this.tableLayoutPanel8.TabIndex = 0;
+            // 
+            // panel3
+            // 
+            this.panel3.BackColor = System.Drawing.Color.MediumSeaGreen;
+            this.panel3.Controls.Add(this.lblSuccess);
+            this.panel3.Controls.Add(this.metroLabel9);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel3.Location = new System.Drawing.Point(3, 3);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(201, 94);
+            this.panel3.TabIndex = 0;
+            // 
+            // lblSuccess
+            // 
+            this.lblSuccess.AutoSize = true;
+            this.lblSuccess.Font = new System.Drawing.Font("Microsoft Sans Serif", 28F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSuccess.ForeColor = System.Drawing.Color.White;
+            this.lblSuccess.Location = new System.Drawing.Point(125, 21);
+            this.lblSuccess.Name = "lblSuccess";
+            this.lblSuccess.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.lblSuccess.Size = new System.Drawing.Size(41, 44);
+            this.lblSuccess.TabIndex = 1;
+            this.lblSuccess.Text = "0";
+            // 
+            // metroLabel9
+            // 
+            this.metroLabel9.AutoSize = true;
+            this.metroLabel9.BackColor = System.Drawing.Color.Transparent;
+            this.metroLabel9.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.metroLabel9.Location = new System.Drawing.Point(7, 61);
+            this.metroLabel9.Name = "metroLabel9";
+            this.metroLabel9.Size = new System.Drawing.Size(52, 19);
+            this.metroLabel9.TabIndex = 0;
+            this.metroLabel9.Text = "Success";
+            this.metroLabel9.UseCustomBackColor = true;
+            this.metroLabel9.UseCustomForeColor = true;
+            // 
+            // panel4
+            // 
+            this.panel4.BackColor = System.Drawing.Color.Black;
+            this.panel4.Controls.Add(this.lblFailed);
+            this.panel4.Controls.Add(this.metroLabel13);
+            this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel4.Location = new System.Drawing.Point(210, 3);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(202, 94);
+            this.panel4.TabIndex = 1;
+            // 
+            // lblFailed
+            // 
+            this.lblFailed.AutoSize = true;
+            this.lblFailed.Font = new System.Drawing.Font("Microsoft Sans Serif", 28F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFailed.ForeColor = System.Drawing.Color.White;
+            this.lblFailed.Location = new System.Drawing.Point(127, 21);
+            this.lblFailed.Name = "lblFailed";
+            this.lblFailed.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.lblFailed.Size = new System.Drawing.Size(41, 44);
+            this.lblFailed.TabIndex = 3;
+            this.lblFailed.Text = "0";
+            // 
+            // metroLabel13
+            // 
+            this.metroLabel13.AutoSize = true;
+            this.metroLabel13.BackColor = System.Drawing.Color.Transparent;
+            this.metroLabel13.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.metroLabel13.Location = new System.Drawing.Point(9, 65);
+            this.metroLabel13.Name = "metroLabel13";
+            this.metroLabel13.Size = new System.Drawing.Size(43, 19);
+            this.metroLabel13.TabIndex = 2;
+            this.metroLabel13.Text = "Failed";
+            this.metroLabel13.UseCustomBackColor = true;
+            this.metroLabel13.UseCustomForeColor = true;
+            // 
+            // panel5
+            // 
+            this.panel5.BackColor = System.Drawing.Color.DarkGray;
+            this.panel5.Controls.Add(this.lblPending);
+            this.panel5.Controls.Add(this.metroLabel12);
+            this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel5.Location = new System.Drawing.Point(3, 103);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(201, 94);
+            this.panel5.TabIndex = 2;
+            // 
+            // lblPending
+            // 
+            this.lblPending.AutoSize = true;
+            this.lblPending.Font = new System.Drawing.Font("Microsoft Sans Serif", 28F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblPending.ForeColor = System.Drawing.Color.White;
+            this.lblPending.Location = new System.Drawing.Point(125, 23);
+            this.lblPending.Name = "lblPending";
+            this.lblPending.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.lblPending.Size = new System.Drawing.Size(41, 44);
+            this.lblPending.TabIndex = 2;
+            this.lblPending.Text = "0";
+            // 
+            // metroLabel12
+            // 
+            this.metroLabel12.AutoSize = true;
+            this.metroLabel12.BackColor = System.Drawing.Color.Transparent;
+            this.metroLabel12.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.metroLabel12.Location = new System.Drawing.Point(3, 64);
+            this.metroLabel12.Name = "metroLabel12";
+            this.metroLabel12.Size = new System.Drawing.Size(56, 19);
+            this.metroLabel12.TabIndex = 1;
+            this.metroLabel12.Text = "Pending";
+            this.metroLabel12.UseCustomBackColor = true;
+            this.metroLabel12.UseCustomForeColor = true;
+            // 
+            // panel6
+            // 
+            this.panel6.Controls.Add(this.tableLayoutPanel9);
+            this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel6.Location = new System.Drawing.Point(653, 23);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(415, 233);
+            this.panel6.TabIndex = 9;
+            // 
+            // tableLayoutPanel9
+            // 
+            this.tableLayoutPanel9.ColumnCount = 2;
+            this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel9.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel9.Controls.Add(this.panel7, 0, 0);
+            this.tableLayoutPanel9.Controls.Add(this.panel8, 1, 0);
+            this.tableLayoutPanel9.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel9.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel9.Name = "tableLayoutPanel9";
+            this.tableLayoutPanel9.RowCount = 2;
+            this.tableLayoutPanel9.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel9.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel9.Size = new System.Drawing.Size(415, 233);
+            this.tableLayoutPanel9.TabIndex = 0;
+            // 
+            // panel7
+            // 
+            this.panel7.BackColor = System.Drawing.Color.MediumSeaGreen;
+            this.panel7.Controls.Add(this.lblTotalSuccess);
+            this.panel7.Controls.Add(this.metroLabel14);
+            this.panel7.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel7.Location = new System.Drawing.Point(3, 3);
+            this.panel7.Name = "panel7";
+            this.panel7.Size = new System.Drawing.Size(201, 110);
+            this.panel7.TabIndex = 0;
+            // 
+            // lblTotalSuccess
+            // 
+            this.lblTotalSuccess.AutoSize = true;
+            this.lblTotalSuccess.Font = new System.Drawing.Font("Microsoft Sans Serif", 28F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTotalSuccess.ForeColor = System.Drawing.Color.White;
+            this.lblTotalSuccess.Location = new System.Drawing.Point(125, 29);
+            this.lblTotalSuccess.Name = "lblTotalSuccess";
+            this.lblTotalSuccess.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.lblTotalSuccess.Size = new System.Drawing.Size(41, 44);
+            this.lblTotalSuccess.TabIndex = 3;
+            this.lblTotalSuccess.Text = "0";
+            // 
+            // metroLabel14
+            // 
+            this.metroLabel14.AutoSize = true;
+            this.metroLabel14.BackColor = System.Drawing.Color.Transparent;
+            this.metroLabel14.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.metroLabel14.Location = new System.Drawing.Point(7, 79);
+            this.metroLabel14.Name = "metroLabel14";
+            this.metroLabel14.Size = new System.Drawing.Size(83, 19);
+            this.metroLabel14.TabIndex = 2;
+            this.metroLabel14.Text = "Total Success";
+            this.metroLabel14.UseCustomBackColor = true;
+            this.metroLabel14.UseCustomForeColor = true;
+            // 
+            // panel8
+            // 
+            this.panel8.BackColor = System.Drawing.Color.Black;
+            this.panel8.Controls.Add(this.lblTotalFailed);
+            this.panel8.Controls.Add(this.metroLabel15);
+            this.panel8.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel8.Location = new System.Drawing.Point(210, 3);
+            this.panel8.Name = "panel8";
+            this.panel8.Size = new System.Drawing.Size(202, 110);
+            this.panel8.TabIndex = 1;
+            // 
+            // lblTotalFailed
+            // 
+            this.lblTotalFailed.AutoSize = true;
+            this.lblTotalFailed.Font = new System.Drawing.Font("Microsoft Sans Serif", 28F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTotalFailed.ForeColor = System.Drawing.Color.White;
+            this.lblTotalFailed.Location = new System.Drawing.Point(139, 29);
+            this.lblTotalFailed.Name = "lblTotalFailed";
+            this.lblTotalFailed.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.lblTotalFailed.Size = new System.Drawing.Size(41, 44);
+            this.lblTotalFailed.TabIndex = 5;
+            this.lblTotalFailed.Text = "0";
+            // 
+            // metroLabel15
+            // 
+            this.metroLabel15.AutoSize = true;
+            this.metroLabel15.BackColor = System.Drawing.Color.Transparent;
+            this.metroLabel15.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.metroLabel15.Location = new System.Drawing.Point(9, 79);
+            this.metroLabel15.Name = "metroLabel15";
+            this.metroLabel15.Size = new System.Drawing.Size(74, 19);
+            this.metroLabel15.TabIndex = 4;
+            this.metroLabel15.Text = "Total Failed";
+            this.metroLabel15.UseCustomBackColor = true;
+            this.metroLabel15.UseCustomForeColor = true;
             // 
             // metroTabPage2
             // 
@@ -1333,7 +1484,7 @@ namespace WhatSender
             this.metroTabControl.Controls.Add(this.metroTabPage3);
             this.metroTabControl.Location = new System.Drawing.Point(20, 60);
             this.metroTabControl.Name = "metroTabControl";
-            this.metroTabControl.SelectedIndex = 0;
+            this.metroTabControl.SelectedIndex = 1;
             this.metroTabControl.Size = new System.Drawing.Size(1079, 608);
             this.metroTabControl.Style = MetroFramework.MetroColorStyle.Green;
             this.metroTabControl.TabIndex = 1;
@@ -1356,12 +1507,11 @@ namespace WhatSender
             // 
             // metroPanel4
             // 
-            this.metroPanel4.Controls.Add(this.metroLabel15);
-            this.metroPanel4.Controls.Add(this.metroLabel14);
-            this.metroPanel4.Controls.Add(this.metroLabel13);
-            this.metroPanel4.Controls.Add(this.metroLabel12);
+            this.metroPanel4.Controls.Add(this.btnExportGroups);
+            this.metroPanel4.Controls.Add(this.ToolStripStatusLabel3);
+            this.metroPanel4.Controls.Add(this.metroButtonRefreshGroups);
             this.metroPanel4.Controls.Add(this.metroButtonExportRecipient);
-            this.metroPanel4.Controls.Add(this.metroLabelRecepientCount);
+            this.metroPanel4.Controls.Add(this.metroLabelRecipientCount);
             this.metroPanel4.Controls.Add(this.metroLabelGroupCount);
             this.metroPanel4.Controls.Add(this.metroLabel11);
             this.metroPanel4.Controls.Add(this.metroLabel10);
@@ -1379,48 +1529,37 @@ namespace WhatSender
             this.metroPanel4.VerticalScrollbarHighlightOnWheel = false;
             this.metroPanel4.VerticalScrollbarSize = 10;
             // 
-            // metroLabel15
+            // btnExportGroups
             // 
-            this.metroLabel15.AutoSize = true;
-            this.metroLabel15.Location = new System.Drawing.Point(759, 533);
-            this.metroLabel15.Name = "metroLabel15";
-            this.metroLabel15.Size = new System.Drawing.Size(241, 19);
-            this.metroLabel15.TabIndex = 14;
-            this.metroLabel15.Text = "* Idea of this Page given by \'bglobalsas\'";
+            this.btnExportGroups.Location = new System.Drawing.Point(472, 25);
+            this.btnExportGroups.Name = "btnExportGroups";
+            this.btnExportGroups.Size = new System.Drawing.Size(75, 23);
+            this.btnExportGroups.TabIndex = 16;
+            this.btnExportGroups.Text = "Export";
+            this.btnExportGroups.UseSelectable = true;
+            this.btnExportGroups.Click += new System.EventHandler(this.btnExportGroups_Click);
             // 
-            // metroLabel14
+            // ToolStripStatusLabel3
             // 
-            this.metroLabel14.AutoSize = true;
-            this.metroLabel14.Location = new System.Drawing.Point(799, 502);
-            this.metroLabel14.Name = "metroLabel14";
-            this.metroLabel14.Size = new System.Drawing.Size(165, 19);
-            this.metroLabel14.TabIndex = 13;
-            this.metroLabel14.Text = "-----  Special Thanks -----";
+            this.ToolStripStatusLabel3.AutoSize = true;
+            this.ToolStripStatusLabel3.Location = new System.Drawing.Point(18, 538);
+            this.ToolStripStatusLabel3.Name = "ToolStripStatusLabel3";
+            this.ToolStripStatusLabel3.Size = new System.Drawing.Size(0, 0);
+            this.ToolStripStatusLabel3.TabIndex = 15;
             // 
-            // metroLabel13
+            // metroButtonRefreshGroups
             // 
-            this.metroLabel13.AutoSize = true;
-            this.metroLabel13.Location = new System.Drawing.Point(710, 230);
-            this.metroLabel13.Name = "metroLabel13";
-            this.metroLabel13.Size = new System.Drawing.Size(351, 114);
-            this.metroLabel13.TabIndex = 12;
-            this.metroLabel13.Text = "1.  Groups and Recipients will auto fetch from your account\r\n     once you logged" +
-    " in.\r\n\r\n2.  Refresh your page and scroll down to get all Groups.\r\n\r\n3. Double cl" +
-    "ick on Group to Save it to CSV File.";
-            // 
-            // metroLabel12
-            // 
-            this.metroLabel12.AutoSize = true;
-            this.metroLabel12.FontSize = MetroFramework.MetroLabelSize.Tall;
-            this.metroLabel12.Location = new System.Drawing.Point(775, 193);
-            this.metroLabel12.Name = "metroLabel12";
-            this.metroLabel12.Size = new System.Drawing.Size(189, 25);
-            this.metroLabel12.TabIndex = 11;
-            this.metroLabel12.Text = "--------- Help ? --------";
+            this.metroButtonRefreshGroups.Location = new System.Drawing.Point(521, 538);
+            this.metroButtonRefreshGroups.Name = "metroButtonRefreshGroups";
+            this.metroButtonRefreshGroups.Size = new System.Drawing.Size(75, 23);
+            this.metroButtonRefreshGroups.TabIndex = 14;
+            this.metroButtonRefreshGroups.Text = "Refresh";
+            this.metroButtonRefreshGroups.UseSelectable = true;
+            this.metroButtonRefreshGroups.Click += new System.EventHandler(this.metroButtonRefreshGroups_Click);
             // 
             // metroButtonExportRecipient
             // 
-            this.metroButtonExportRecipient.Location = new System.Drawing.Point(621, 25);
+            this.metroButtonExportRecipient.Location = new System.Drawing.Point(984, 25);
             this.metroButtonExportRecipient.Name = "metroButtonExportRecipient";
             this.metroButtonExportRecipient.Size = new System.Drawing.Size(75, 23);
             this.metroButtonExportRecipient.TabIndex = 10;
@@ -1428,14 +1567,14 @@ namespace WhatSender
             this.metroButtonExportRecipient.UseSelectable = true;
             this.metroButtonExportRecipient.Click += new System.EventHandler(this.metroButtonExportRecipient_Click);
             // 
-            // metroLabelRecepientCount
+            // metroLabelRecipientCount
             // 
-            this.metroLabelRecepientCount.AutoSize = true;
-            this.metroLabelRecepientCount.Location = new System.Drawing.Point(500, 32);
-            this.metroLabelRecepientCount.Name = "metroLabelRecepientCount";
-            this.metroLabelRecepientCount.Size = new System.Drawing.Size(16, 19);
-            this.metroLabelRecepientCount.TabIndex = 9;
-            this.metroLabelRecepientCount.Text = "0";
+            this.metroLabelRecipientCount.AutoSize = true;
+            this.metroLabelRecipientCount.Location = new System.Drawing.Point(653, 32);
+            this.metroLabelRecipientCount.Name = "metroLabelRecipientCount";
+            this.metroLabelRecipientCount.Size = new System.Drawing.Size(16, 19);
+            this.metroLabelRecipientCount.TabIndex = 9;
+            this.metroLabelRecipientCount.Text = "0";
             // 
             // metroLabelGroupCount
             // 
@@ -1449,7 +1588,7 @@ namespace WhatSender
             // metroLabel11
             // 
             this.metroLabel11.AutoSize = true;
-            this.metroLabel11.Location = new System.Drawing.Point(403, 32);
+            this.metroLabel11.Location = new System.Drawing.Point(569, 32);
             this.metroLabel11.Name = "metroLabel11";
             this.metroLabel11.Size = new System.Drawing.Size(78, 19);
             this.metroLabel11.TabIndex = 7;
@@ -1467,15 +1606,16 @@ namespace WhatSender
             // metroListRecipient
             // 
             this.metroListRecipient.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1});
+            this.columnHeader1,
+            this.columnNumber});
             this.metroListRecipient.Font = new System.Drawing.Font("Segoe UI", 12F);
             this.metroListRecipient.FullRowSelect = true;
             this.metroListRecipient.GridLines = true;
-            this.metroListRecipient.Location = new System.Drawing.Point(403, 54);
+            this.metroListRecipient.Location = new System.Drawing.Point(569, 54);
             this.metroListRecipient.MultiSelect = false;
             this.metroListRecipient.Name = "metroListRecipient";
             this.metroListRecipient.OwnerDraw = true;
-            this.metroListRecipient.Size = new System.Drawing.Size(293, 500);
+            this.metroListRecipient.Size = new System.Drawing.Size(490, 474);
             this.metroListRecipient.Style = MetroFramework.MetroColorStyle.Green;
             this.metroListRecipient.TabIndex = 5;
             this.metroListRecipient.UseCompatibleStateImageBehavior = false;
@@ -1484,8 +1624,13 @@ namespace WhatSender
             // 
             // columnHeader1
             // 
-            this.columnHeader1.Text = "Number";
-            this.columnHeader1.Width = 287;
+            this.columnHeader1.Text = "Name";
+            this.columnHeader1.Width = 257;
+            // 
+            // columnNumber
+            // 
+            this.columnNumber.Text = "Number";
+            this.columnNumber.Width = 200;
             // 
             // metroListViewGroup
             // 
@@ -1496,17 +1641,14 @@ namespace WhatSender
             this.metroListViewGroup.FullRowSelect = true;
             this.metroListViewGroup.GridLines = true;
             this.metroListViewGroup.Location = new System.Drawing.Point(20, 54);
-            this.metroListViewGroup.MultiSelect = false;
             this.metroListViewGroup.Name = "metroListViewGroup";
             this.metroListViewGroup.OwnerDraw = true;
-            this.metroListViewGroup.Size = new System.Drawing.Size(356, 500);
+            this.metroListViewGroup.Size = new System.Drawing.Size(527, 474);
             this.metroListViewGroup.Style = MetroFramework.MetroColorStyle.Green;
             this.metroListViewGroup.TabIndex = 4;
             this.metroListViewGroup.UseCompatibleStateImageBehavior = false;
             this.metroListViewGroup.UseSelectable = true;
             this.metroListViewGroup.View = System.Windows.Forms.View.Details;
-            this.metroListViewGroup.SelectedIndexChanged += new System.EventHandler(this.metroListViewGroup_SelectedIndexChanged);
-            this.metroListViewGroup.DoubleClick += new System.EventHandler(this.metroListViewGroup_DoubleClick);
             // 
             // columnName
             // 
@@ -1515,44 +1657,95 @@ namespace WhatSender
             // 
             // columnMember
             // 
-            this.columnMember.Text = "Members";
+            this.columnMember.Text = "Group ID";
             this.columnMember.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.columnMember.Width = 100;
+            this.columnMember.Width = 285;
             // 
-            // backgroundWorkerGroup
+            // lblReady
             // 
-            this.backgroundWorkerGroup.WorkerReportsProgress = true;
-            this.backgroundWorkerGroup.WorkerSupportsCancellation = true;
-            this.backgroundWorkerGroup.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerGroup_DoWork);
-            this.backgroundWorkerGroup.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorkerGroup_ProgressChanged);
+            this.lblReady.AutoSize = true;
+            this.lblReady.BackColor = System.Drawing.Color.DarkSeaGreen;
+            this.lblReady.ForeColor = System.Drawing.Color.White;
+            this.lblReady.Location = new System.Drawing.Point(863, 38);
+            this.lblReady.Name = "lblReady";
+            this.lblReady.Size = new System.Drawing.Size(56, 19);
+            this.lblReady.TabIndex = 5;
+            this.lblReady.Text = "ONLINE";
+            this.lblReady.UseCustomBackColor = true;
+            this.lblReady.UseCustomForeColor = true;
+            // 
+            // cbShowLogs
+            // 
+            this.cbShowLogs.AutoSize = true;
+            this.cbShowLogs.Location = new System.Drawing.Point(33, 670);
+            this.cbShowLogs.Name = "cbShowLogs";
+            this.cbShowLogs.Size = new System.Drawing.Size(79, 17);
+            this.cbShowLogs.TabIndex = 6;
+            this.cbShowLogs.Text = "Show Logs";
+            this.cbShowLogs.UseVisualStyleBackColor = true;
+            this.cbShowLogs.CheckedChanged += new System.EventHandler(this.cbShowLogs_CheckedChanged);
+            // 
+            // backgroundWorkerMain
+            // 
+            this.backgroundWorkerMain.WorkerReportsProgress = true;
+            this.backgroundWorkerMain.WorkerSupportsCancellation = true;
+            this.backgroundWorkerMain.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerMain_DoWork);
+            this.backgroundWorkerMain.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorkerMain_ProgressChanged);
+            this.backgroundWorkerMain.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorkerMain_RunWorkerCompleted);
+            // 
+            // backgroundWorkerUpdateTiles
+            // 
+            this.backgroundWorkerUpdateTiles.WorkerReportsProgress = true;
+            this.backgroundWorkerUpdateTiles.WorkerSupportsCancellation = true;
+            this.backgroundWorkerUpdateTiles.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerUpdateTiles_DoWork);
+            this.backgroundWorkerUpdateTiles.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorkerUpdateTiles_ProgressChanged);
+            this.backgroundWorkerUpdateTiles.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorkerUpdateTiles_RunWorkerCompleted);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1430, 690);
+            this.ClientSize = new System.Drawing.Size(1120, 690);
+            this.Controls.Add(this.cbShowLogs);
             this.Controls.Add(this.metroLabelLogsLabel);
             this.Controls.Add(this.richTextBoxLogs);
             this.Controls.Add(this.metroButtonLogin);
             this.Controls.Add(this.metroTabControl);
+            this.Controls.Add(this.lblReady);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.ImeMode = System.Windows.Forms.ImeMode.Off;
             this.MaximumSize = new System.Drawing.Size(1430, 690);
             this.MinimumSize = new System.Drawing.Size(1120, 690);
             this.Name = "MainForm";
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Style = MetroFramework.MetroColorStyle.Default;
             this.Text = "WhatSender - WhatApp Bulk Message Sender";
             this.Theme = MetroFramework.MetroThemeStyle.Default;
+            this.Load += new System.EventHandler(this.MainForm_Load);
+            this.Shown += new System.EventHandler(this.MainForm_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.metroStyleManager1)).EndInit();
             this.metroTabPage1.ResumeLayout(false);
             this.tableLayoutPanel6.ResumeLayout(false);
             this.tableLayoutPanel6.PerformLayout();
-            this.metroPanelPending.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.metroGridSent)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.metroGridPending)).EndInit();
             this.metroPanel1.ResumeLayout(false);
             this.metroPanel3.ResumeLayout(false);
             this.metroPanel3.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.tableLayoutPanel8.ResumeLayout(false);
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
+            this.panel5.ResumeLayout(false);
+            this.panel5.PerformLayout();
+            this.panel6.ResumeLayout(false);
+            this.tableLayoutPanel9.ResumeLayout(false);
+            this.panel7.ResumeLayout(false);
+            this.panel7.PerformLayout();
+            this.panel8.ResumeLayout(false);
+            this.panel8.PerformLayout();
             this.metroTabPage2.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
@@ -1589,7 +1782,6 @@ namespace WhatSender
         #endregion
 
         private MetroFramework.Components.MetroStyleManager metroStyleManager1;
-        private System.ComponentModel.BackgroundWorker backgroundWorkerMain;
         private System.Windows.Forms.OpenFileDialog openFileDialogFileUpload;
         private System.Windows.Forms.OpenFileDialog openFileDialogAttachment;
         private System.Windows.Forms.DataGridViewTextBoxColumn number;
@@ -1597,21 +1789,12 @@ namespace WhatSender
         private System.Windows.Forms.DataGridViewTextBoxColumn message;
         private System.Windows.Forms.DataGridViewTextBoxColumn attachment;
         private System.Windows.Forms.DataGridViewTextBoxColumn timestamp;
-        private MetroFramework.Controls.MetroButton metroButtonLogin;
-        private System.ComponentModel.BackgroundWorker backgroundWorkerCheckLoggedIn;
         private System.Windows.Forms.RichTextBox richTextBoxLogs;
         private MetroFramework.Controls.MetroLabel metroLabelLogsLabel;
         private System.ComponentModel.BackgroundWorker backgroundWorkerFetchData;
         private MetroFramework.Controls.MetroLabel metroLabel8;
         private MetroFramework.Controls.MetroTabPage metroTabPage1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
-        private MetroFramework.Controls.MetroPanel metroPanelPending;
-        private MetroFramework.Controls.MetroTile metroTileSent;
-        private MetroFramework.Controls.MetroTile metroTileFailed;
-        private MetroFramework.Controls.MetroTile metroTileTotalFailed;
-        private MetroFramework.Controls.MetroTile metroTileTotalSent;
-        private MetroFramework.Controls.MetroTile metroTilePending;
-        private MetroFramework.Controls.MetroPanel metroPanel2;
         private MetroFramework.Controls.MetroGrid metroGridSent;
         private MetroFramework.Controls.MetroGrid metroGridPending;
         private MetroFramework.Controls.MetroPanel metroPanel1;
@@ -1668,21 +1851,46 @@ namespace WhatSender
         private MetroFramework.Controls.MetroButton metroButtonSaveConfig;
         private MetroFramework.Controls.MetroTabControl metroTabControl;
         private MetroFramework.Controls.MetroTabPage metroTabPage3;
-        private System.ComponentModel.BackgroundWorker backgroundWorkerGroup;
         private MetroFramework.Controls.MetroPanel metroPanel4;
         private MetroFramework.Controls.MetroListView metroListViewGroup;
         private System.Windows.Forms.ColumnHeader columnName;
         private System.Windows.Forms.ColumnHeader columnMember;
-        private MetroFramework.Controls.MetroLabel metroLabelRecepientCount;
+        private MetroFramework.Controls.MetroLabel metroLabelRecipientCount;
         private MetroFramework.Controls.MetroLabel metroLabelGroupCount;
         private MetroFramework.Controls.MetroLabel metroLabel11;
         private MetroFramework.Controls.MetroLabel metroLabel10;
         private MetroFramework.Controls.MetroListView metroListRecipient;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private MetroFramework.Controls.MetroButton metroButtonExportRecipient;
-        private MetroFramework.Controls.MetroLabel metroLabel15;
-        private MetroFramework.Controls.MetroLabel metroLabel14;
+        public MetroFramework.Controls.MetroButton metroButtonLogin;
+        public System.Windows.Forms.Timer timerWorkerMain;
+        public System.Windows.Forms.Timer timerDataFetch;
+        public MetroFramework.Controls.MetroLabel lblReady;
+        private System.Windows.Forms.CheckBox cbShowLogs;
+        private MetroFramework.Controls.MetroButton metroButtonRefreshGroups;
+        private System.Windows.Forms.ColumnHeader columnNumber;
+        private MetroFramework.Controls.MetroLabel ToolStripStatusLabel3;
+        private MetroFramework.Controls.MetroButton btnExportGroups;
+        public AbortableBackgroundWorker backgroundWorkerMain;
+        public AbortableBackgroundWorker backgroundWorkerUpdateTiles;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel8;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Label lblSuccess;
+        private MetroFramework.Controls.MetroLabel metroLabel9;
+        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.Label lblFailed;
         private MetroFramework.Controls.MetroLabel metroLabel13;
+        private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.Label lblPending;
         private MetroFramework.Controls.MetroLabel metroLabel12;
+        private System.Windows.Forms.Panel panel6;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel9;
+        private System.Windows.Forms.Panel panel7;
+        private System.Windows.Forms.Label lblTotalSuccess;
+        private MetroFramework.Controls.MetroLabel metroLabel14;
+        private System.Windows.Forms.Panel panel8;
+        private System.Windows.Forms.Label lblTotalFailed;
+        private MetroFramework.Controls.MetroLabel metroLabel15;
     }
 }

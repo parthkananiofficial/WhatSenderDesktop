@@ -43,5 +43,13 @@ namespace WhatSender.model
         public string SubjectOwner { get; set; }
     }
 
+    public class GroupParticipant
+    {
+        public string _serialized { get; set; }
+        public string server { get; set; }
+        public string user { get; set; }
+    }
+
+
 
 }

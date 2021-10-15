@@ -4,7 +4,7 @@ namespace WhatSender
 {
     internal class WaitingConfig : ConfigurationElement
     {
-        [ConfigurationProperty("lumpsum_delay", DefaultValue = 4, IsRequired = true)]
+        [ConfigurationProperty("lumpsum_delay", DefaultValue = 2, IsRequired = true)]
         public int lumpsum_delay
         {
             get
@@ -30,7 +30,7 @@ namespace WhatSender
             }
         }
 
-        [ConfigurationProperty("wait_after_every_message", DefaultValue = 5, IsRequired = true)]
+        [ConfigurationProperty("wait_after_every_message", DefaultValue = 0, IsRequired = true)]
         public int wait_after_every_message
         {
             get

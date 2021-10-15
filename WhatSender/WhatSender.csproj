@@ -64,6 +64,26 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="CefSharp, Version=93.1.111.0, Culture=neutral, PublicKeyToken=40c4b6fc221f4138, processorArchitecture=MSIL">
       <HintPath>..\packages\CefSharp.Common.93.1.111\lib\net452\CefSharp.dll</HintPath>
@@ -73,6 +93,9 @@
     </Reference>
     <Reference Include="CefSharp.WinForms, Version=93.1.111.0, Culture=neutral, PublicKeyToken=40c4b6fc221f4138, processorArchitecture=MSIL">
       <HintPath>..\packages\CefSharp.WinForms.93.1.111\lib\net452\CefSharp.WinForms.dll</HintPath>
+    </Reference>
+    <Reference Include="CefSharp.WinForms.ChromiumWebBrowserExtensions, Version=83.4.20.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CefSharp.WinForms.ChromiumWebBrowserExtensions.83.4.20\lib\net46\CefSharp.WinForms.ChromiumWebBrowserExtensions.dll</HintPath>
     </Reference>
     <Reference Include="ChromiumFX, Version=3.3440.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\hxc.ChromiumFX.3.3440.1\lib\net40-client\ChromiumFX.dll</HintPath>
@@ -101,6 +124,11 @@
     <Reference Include="MetroFramework.Fonts, Version=1.4.0.0, Culture=neutral, PublicKeyToken=5f91a84759bf584a, processorArchitecture=MSIL">
       <HintPath>..\packages\MetroModernUI.1.4.0.0\lib\net\MetroFramework.Fonts.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Office.Interop.Excel.15.0.4795.1000\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.31\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
@@ -112,11 +140,16 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="Sayaka.Common, Version=1.0.20.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sayaka.Common.1.0.20\lib\net40\Sayaka.Common.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Design" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xaml" />
@@ -140,6 +173,12 @@
   <ItemGroup>
     <Compile Include="Config\Config.cs" />
     <Compile Include="Config\APIConfig.cs" />
+    <Compile Include="FormBrowser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormBrowser.Designer.cs">
+      <DependentUpon>FormBrowser.cs</DependentUpon>
+    </Compile>
     <Compile Include="Helper\DataHelper.cs" />
     <Compile Include="Config\DataSourceConfig.cs" />
     <Compile Include="Helper\LogHelper.cs" />
@@ -153,6 +192,7 @@
     </Compile>
     <Compile Include="Extension\MyExtensions.cs" />
     <Compile Include="model\AllRecipients.cs" />
+    <Compile Include="model\ClsBase64.cs" />
     <Compile Include="model\Group.cs" />
     <Compile Include="model\GroupLog.cs" />
     <Compile Include="Program.cs" />
@@ -161,6 +201,9 @@
     <Compile Include="Config\TotalConfig.cs" />
     <Compile Include="Config\WaitingConfig.cs" />
     <Compile Include="WhatsApp.cs" />
+    <EmbeddedResource Include="FormBrowser.resx">
+      <DependentUpon>FormBrowser.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -202,6 +245,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\New Project.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dot-green.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dot-red.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dot-green.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dot-red.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Selenium.WebDriver.GeckoDriver.0.29.1\build\Selenium.WebDriver.GeckoDriver.targets" Condition="Exists('..\packages\Selenium.WebDriver.GeckoDriver.0.29.1\build\Selenium.WebDriver.GeckoDriver.targets')" />

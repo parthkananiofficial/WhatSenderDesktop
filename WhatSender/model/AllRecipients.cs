@@ -11,6 +11,12 @@ namespace WhatSender.model
     {
         [JsonProperty("id")]
         public string Id { get; set; }
+
+        [JsonProperty("name")]
+        public string Name { get; set; }
+
+        [JsonProperty("number")]
+        public string Number { get; set; }
     }
 
     public class AllRecipients

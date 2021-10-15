@@ -1,5 +1,6 @@
 ﻿using LumenWorks.Framework.IO.Csv;
 using MetroFramework.Controls;
+using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -18,35 +20,42 @@ using WhatSender.model;
 
 namespace WhatSender
 {
-   
+
     public partial class MainForm : MetroFramework.Forms.MetroForm
     {
         Config configuration;
         DataTable dt_file_messages = new DataTable();
         DataHelper dataHelper = new DataHelper();
         public Boolean isSending = false;
-        DataHelper objDataHelper;
+        
         SeleniumHelperNew objSeleniumHelper;
         //SeleniumHelper objSeleniumHelper;
         int ProcessCounter = 0;
         int sent = 0;
         int failed = 0;
         int queue_total = 0;
-        bool isLoggedIn = false;        
 
+        public List<Group> groups = new List<Group>();
+        public List<Recipient> recipients = new List<Recipient>();
+
+        FormBrowser formBrowser;
 
         public MainForm()
         {
             InitializeComponent();
-            this.components.SetStyle(this);
-            this.components.SetTheme(this);
+
+        }
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            //this.components.SetStyle(this);
+            //this.components.SetTheme(this);
             //configuration = ConfigurationManager.GetSection("Config") as Config;
             loadConfig();// load UI based on configuration
 
             metroGridPending.DataSource = dataHelper.dt_pending_messages;
             metroGridSent.DataSource = dataHelper.dt_sent_messages;
             isSending = false;
-            objDataHelper = new DataHelper();
+            
             objSeleniumHelper = new SeleniumHelperNew();
             //objSeleniumHelper = new SeleniumHelper();
 
@@ -61,10 +70,18 @@ namespace WhatSender
                 groupBoxAPIConfig.Enabled = false;
             }
             metroTextBoxSampleFetchedData.Text = File.ReadAllText("sample.json");
-            refresh_tiles();
             frontEndLogs("Application Started");
-        }
+            refresh_tiles();
 
+            if (SenderModule.WAPIScript == "")
+            {
+                MessageBox.Show("Unable to load latest API...");
+                this.Close();
+            }
+            formBrowser = new FormBrowser(this);
+            backgroundWorkerUpdateTiles.RunWorkerAsync();
+
+        }
         private void metroRadioAPI_CheckedChanged(object sender, EventArgs e)
         {
             groupBoxAPIConfig.Enabled = metroRadioAPI.Checked;
@@ -77,12 +94,14 @@ namespace WhatSender
 
         private void metroButtonFileUploadBrowse_Click(object sender, EventArgs e)
         {
-            openFileDialogFileUpload.Filter = "CSV files (*.csv)|*.csv|All files (*.*)|*.*";
+            openFileDialogFileUpload.Filter = "CSV files (*.csv)|*.csv|*.xls|*.xlsx|All files (*.*)|*.*";
             openFileDialogFileUpload.Title = "Choose Numbers List..";
             openFileDialogFileUpload.RestoreDirectory = true;
-            openFileDialogFileUpload.ShowDialog();
-            metroTextBoxPhonenumbersFile.Text = openFileDialogFileUpload.FileName;
-            ImportNumbers(metroTextBoxPhonenumbersFile.Text);
+            if (openFileDialogFileUpload.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                metroTextBoxPhonenumbersFile.Text = openFileDialogFileUpload.FileName;
+                ImportNumbers(metroTextBoxPhonenumbersFile.Text);
+            }
         }
 
         private void MetroButtonAttachmentBrowse_Click(object sender, EventArgs e)
@@ -97,7 +116,23 @@ namespace WhatSender
         {
             try
             {
-                if (filePath.EndsWith(".csv"))
+                string fileExt = string.Empty;
+                fileExt = Path.GetExtension(filePath);
+                if (filePath.EndsWith(".xls") || filePath.EndsWith(".xlsx"))
+                {
+                    try
+                    {
+                        dt_file_messages = new DataTable();
+                        dt_file_messages = dataHelper.ReadExcel(filePath, fileExt); //read excel file
+
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message.ToString());
+                        return;
+                    }
+                }
+                else if (filePath.EndsWith(".csv"))
                 {
                     // open the file "data.csv" which is a CSV file with headers
                     using (CsvReader csv = new CsvReader(new StreamReader(filePath), true))
@@ -106,23 +141,26 @@ namespace WhatSender
                         dt_file_messages = new DataTable();
                         dt_file_messages.Load(csv);
                     }
-                    if (Convert.ToString(dt_file_messages.Columns[0]).ToLower() != "phone")
-                    {
-                        MessageBox.Show("Invalid First column in File");
-                        return;
-                    }
-                    if (dt_file_messages.Rows != null && dt_file_messages.Rows.ToString() != String.Empty)
-                    {
-                        metroGridPhoneNumbers.DataSource = dt_file_messages;
-                    }
-                    if (metroGridPhoneNumbers.Rows.Count == 0)
-                    {
-                        MessageBox.Show("There is no data in this file", "WhatsApp", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
                 }
                 else
                 {
-                    MessageBox.Show("Selected File is Invalid, Please Select valid csv file.", "WhatsApp", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Please choose .xls .xlsx or csv file only.", "WhatsApp", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                //validation started
+                if (Convert.ToString(dt_file_messages.Columns[0]).ToLower() != "phone")
+                {
+                    MessageBox.Show("Invalid First column in File");
+                    return;
+                }
+                if (dt_file_messages.Rows != null && dt_file_messages.Rows.ToString() != String.Empty)
+                {
+                    metroGridPhoneNumbers.DataSource = dt_file_messages;
+                }
+                if (metroGridPhoneNumbers.Rows.Count == 0)
+                {
+                    MessageBox.Show("There is no data in this file", "WhatsApp", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
             catch (Exception ex)
@@ -133,7 +171,7 @@ namespace WhatSender
 
         private void metroRadioButtonMessageText_CheckedChanged(object sender, EventArgs e)
         {
-            groupBoxAttachment.Enabled = metroRadioButtonMessageText.Checked ? false: true;
+            groupBoxAttachment.Enabled = metroRadioButtonMessageText.Checked ? false : true;
         }
 
         private void metroRadioButtonMessagePhotoVideo_CheckedChanged(object sender, EventArgs e)
@@ -148,40 +186,44 @@ namespace WhatSender
 
         private void metroButtonStartStop_Click(object sender, EventArgs e)
         {
-            
+
             if (metroButtonStartStop.Text == "Start")
             {
                 frontEndLogs("Starting the task");
-                if (configuration.DataSourceConfig.type == DataSourceConfig.API && backgroundWorkerFetchData.IsBusy != true)
+                if (configuration.DataSourceConfig.type == DataSourceConfig.API)
                 {
                     //dumpDataToWaitingQueue();
-                    fetchDataWorker(true);
+                   
+                        fetchDataWorker(true);
+                 
                 }
 
-                if (!mainWorker(true))
-                {
-                    MessageBox.Show("Queue is busy, Try again after sometime!");
-                }
+                mainWorker(true);
+                
             }
             else
-            {
-                fetchDataWorker(false);
-                mainWorker(false);
-            }    
+            {                
+                    fetchDataWorker(false);
+             
+
+                 mainWorker(false);
+                               
+            }
         }
 
         private Boolean mainWorker(bool action)
         {
             if (action)
             {
-                if (!isLoggedIn)
+                if (!formBrowser.IsWAPILoggedIn)
                 {
                     MessageBox.Show("Please login into WhatsApp");
                     return false;
-                }                    
-                if (backgroundWorkerMain.IsBusy != true && isLoggedIn)
+                }
+                if (formBrowser.IsWAPILoggedIn)
                 {
-                    backgroundWorkerMain.RunWorkerAsync();
+                    backgroundWorkerMain.RunWorkerAsync(2000);
+                    //timerWorkerMain.Enabled = true;
                     frontEndLogs("worker:SendMessage Status:Started");
                     metroButtonStartStop.Text = "Stop";
                     metroLabelStatus.Text = "Sending...";
@@ -191,16 +233,13 @@ namespace WhatSender
             }
             else
             {
-                if (backgroundWorkerMain.WorkerSupportsCancellation == true)
-                {
-                    backgroundWorkerMain.CancelAsync();
-                    metroButtonStartStop.Text = "Start";
-                    metroLabelStatus.Text = "Stopped";
-                    frontEndLogs("worker:SendMessage Status:Stopped");
-                    return true;
-                }
-                else
-                    return true;
+                backgroundWorkerMain.Abort();
+                backgroundWorkerMain.CancelAsync();
+                //timerWorkerMain.Enabled = false;
+                metroButtonStartStop.Text = "Start";
+                metroLabelStatus.Text = "Stopped";
+                frontEndLogs("worker:SendMessage Status:Stopped");
+                return true;
             }
         }
 
@@ -208,10 +247,9 @@ namespace WhatSender
         {
             if (action)
             {
-                //dumpDataToWaitingQueue();
                 if (backgroundWorkerFetchData.IsBusy != true)
                 {
-                    backgroundWorkerFetchData.RunWorkerAsync();
+                    timerDataFetch.Enabled = true;
                     frontEndLogs("worker:FetchData Status:Started");
                     return true;
                 }
@@ -219,42 +257,19 @@ namespace WhatSender
             }
             else
             {
-                if (configuration.DataSourceConfig.type == DataSourceConfig.API && backgroundWorkerFetchData.WorkerSupportsCancellation == true)
+                if (configuration.DataSourceConfig.type == DataSourceConfig.API)
                 {
-                    backgroundWorkerFetchData.CancelAsync();
+                    timerDataFetch.Enabled = false;
                     frontEndLogs("worker:FetchData Status:Stopped");
                     return true;
                 }
                 else
                     return false;
             }
-            
+
         }
 
-        private Boolean groupWorker(bool action)
-        {
-            if (action)
-            {
-                if (backgroundWorkerGroup.IsBusy != true)
-                {
-                    backgroundWorkerGroup.RunWorkerAsync();
-                    frontEndLogs("worker:GroupFetch Status:Started");
-                    return true;
-                }
-                return false;
-            }
-            else
-            {
-                if (backgroundWorkerGroup.WorkerSupportsCancellation == true)
-                {
-                    backgroundWorkerGroup.CancelAsync();
-                    frontEndLogs("worker:GroupFetch Status:Stopped");
-                    return true;
-                }
-                else
-                    return true;
-            }
-        }
+
 
         private void metroButtonSaveConfig_Click(object sender, EventArgs e)
         {
@@ -275,15 +290,15 @@ namespace WhatSender
             configuration.Save();
             MessageBox.Show("Configuration has been saved Successfully");
 
-            if(configuration.DataSourceConfig.type == DataSourceConfig.FILE && dt_file_messages.Rows.Count >0)
+            if (configuration.DataSourceConfig.type == DataSourceConfig.FILE && dt_file_messages.Rows.Count > 0)
             {
-                if(objDataHelper.dt_pending_messages.Rows.Count > 0)
+                if (dataHelper.dt_pending_messages.Rows.Count > 0)
                 {
                     DialogResult dialogResult = MessageBox.Show("Do you want to Reload the Queue ?", "Are you Sure ??", MessageBoxButtons.YesNo);
                     if (dialogResult == DialogResult.Yes)
                     {
                         //user wants to reload the queue
-                        objDataHelper.dt_pending_messages.Clear();
+                        dataHelper.dt_pending_messages.Clear();
                     }
                     else if (dialogResult == DialogResult.No)
                     {
@@ -292,14 +307,15 @@ namespace WhatSender
                 }
                 dumpDataToWaitingQueue();
             }
-            else if (configuration.DataSourceConfig.type == DataSourceConfig.API) {
-                if (objDataHelper.dt_pending_messages.Rows.Count > 0)
+            else if (configuration.DataSourceConfig.type == DataSourceConfig.API)
+            {
+                if (dataHelper.dt_pending_messages.Rows.Count > 0)
                 {
                     DialogResult dialogResult = MessageBox.Show("Do you want to Reload the Queue ?", "Are you Sure ??", MessageBoxButtons.YesNo);
                     if (dialogResult == DialogResult.Yes)
                     {
                         //user wants to reload the queue
-                        objDataHelper.dt_pending_messages.Clear();
+                        dataHelper.dt_pending_messages.Clear();
                     }
                     else if (dialogResult == DialogResult.No)
                     {
@@ -309,7 +325,7 @@ namespace WhatSender
                 dumpDataToWaitingQueue();
             }
 
-            if(isReadyToSend())
+            if (isReadyToSend())
             {
                 //go to second tab
                 metroTabControl.SelectedIndex = 1;
@@ -326,7 +342,7 @@ namespace WhatSender
 
             if (configuration.DataSourceConfig.type == DataSourceConfig.API)
             {
-                metroRadioAPI.Checked = true;                
+                metroRadioAPI.Checked = true;
             }
             else if (configuration.DataSourceConfig.type == "file")
             {
@@ -351,22 +367,22 @@ namespace WhatSender
             {
                 // copy the data to waiting queue
                 frontEndLogs("Dumping " + dt_file_messages.Rows.Count + " Records from:" + configuration.DataSourceConfig.type);
-                for(int i=0;i<dt_file_messages.Rows.Count;i++)
+                for (int i = 0; i < dt_file_messages.Rows.Count; i++)
                 {
-                    DataRow dr= objDataHelper.dt_pending_messages.NewRow();
+                    DataRow dr = dataHelper.dt_pending_messages.NewRow();
                     dr["Id"] = dt_file_messages.Rows[i]["phone"];
                     dr["Number"] = dt_file_messages.Rows[i]["phone"];
-                    dr["Message"] = objDataHelper.deduceMessage(dt_file_messages, dt_file_messages.Rows[i], metroTextBoxMessage.Text);
-                    dr["Attachment"] = objDataHelper.deduceMessage(dt_file_messages, dt_file_messages.Rows[i], metroTextBoxAttachment.Text);
+                    dr["Message"] = dataHelper.deduceMessage(dt_file_messages, dt_file_messages.Rows[i], metroTextBoxMessage.Text);
+                    dr["Attachment"] = dataHelper.deduceMessage(dt_file_messages, dt_file_messages.Rows[i], metroTextBoxAttachment.Text);
                     dr["Media"] = metroRadioButtonMessagePhotoVideo.Checked;
                     dr["Document"] = metroRadioButtonMessageDocument.Checked;
                     dr["Time"] = DateTime.Now;
-                    objDataHelper.dt_pending_messages.Rows.Add(dr);
+                    dataHelper.dt_pending_messages.Rows.Add(dr);
                     queue_total++;
                 }
 
             }
-            else if(configuration.DataSourceConfig.type == DataSourceConfig.API)
+            else if (configuration.DataSourceConfig.type == DataSourceConfig.API)
             {
                 // API connection
                 //queue_total++;
@@ -377,7 +393,7 @@ namespace WhatSender
                     int i = 0;
                     foreach (var item in messagesObject.messages)
                     {
-                        DataRow dr = objDataHelper.dt_pending_messages.NewRow();
+                        DataRow dr = dataHelper.dt_pending_messages.NewRow();
                         dr["Id"] = item.id;
                         dr["Number"] = item.phone;
                         dr["Message"] = item.message;
@@ -385,127 +401,28 @@ namespace WhatSender
                         dr["Media"] = item.isMedia;
                         dr["Document"] = item.isDocument;
                         dr["Time"] = DateTime.Now;
-                        objDataHelper.dt_pending_messages.Rows.Add(dr);
+                        dataHelper.dt_pending_messages.Rows.Add(dr);
                         queue_total++;
                         i++;
                     }
                     frontEndLogs("Dumping " + i + " Records from:" + configuration.DataSourceConfig.type);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message);
                 }
             }
-            metroGridPending.DataSource = objDataHelper.dt_pending_messages;
-            metroGridSent.DataSource = objDataHelper.dt_sent_messages;
+            //metroGridPending.DataSource = dataHelper.dt_pending_messages;
+            //metroGridSent.DataSource = dataHelper.dt_sent_messages;
             refresh_tiles();
-            if (configuration.DataSourceConfig.type == DataSourceConfig.API && objDataHelper.dt_pending_messages.Rows.Count > 0) // assume that auto start when queue is waiting
+            if (configuration.DataSourceConfig.type == DataSourceConfig.API && dataHelper.dt_pending_messages.Rows.Count > 0) // assume that auto start when queue is waiting
             {
                 mainWorker(true);
             }
         }
 
-        private void backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            BackgroundWorker worker = sender as BackgroundWorker;
-            if(objDataHelper.dt_pending_messages.Rows.Count ==0)
-            {
-                backgroundWorkerMain.ReportProgress(100);
-            }
-
-            for (Int32 i = 0; i < objDataHelper.dt_pending_messages.Rows.Count;)
-            {
-                if (worker.CancellationPending == true)
-                {
-                    e.Cancel = true;
-                    break;
-                }
-                if (i != objDataHelper.dt_pending_messages.Rows.Count)
-                {
-                    WhatsApp whatsApp = new WhatsApp();
-                    whatsApp.Id = objDataHelper.dt_pending_messages.Rows[i]["Id"].ToString();
-                    whatsApp.Phone = objDataHelper.dt_pending_messages.Rows[i]["Number"].ToString();
-                    whatsApp.Message = objDataHelper.dt_pending_messages.Rows[i]["Message"].ToString();
-                    whatsApp.Attachment = objDataHelper.dt_pending_messages.Rows[i]["Attachment"].ToString();
-                    whatsApp.WithMedia = Convert.ToBoolean(objDataHelper.dt_pending_messages.Rows[i]["Media"]);
-                    whatsApp.WithDocument = Convert.ToBoolean(objDataHelper.dt_pending_messages.Rows[i]["Document"]);
-                    whatsApp = WhatsAppValidation(whatsApp);
-                    //whatsApp.Status = true;//generaterandomBool();
-                    if(!whatsApp.Status)
-                    {
-                        //dont' send message if validation failed.
-                    }
-                    else
-                    {
-                        whatsApp = objSeleniumHelper.SendMessage(whatsApp);
-                    }
-                    
-                    if (whatsApp.Status)
-                    {
-                        sent++;
-                        configuration.total_counts.success++;
-                    }
-                    else
-                    {
-                        failed++;
-                        configuration.total_counts.error++;
-                    }
-                    DataRow dr = objDataHelper.dt_sent_messages.NewRow();
 
 
-                    dr["Number"] = whatsApp.Phone;
-                    dr["Message"] = whatsApp.Message;
-                    dr["Attachment"] = whatsApp.Attachment;
-                    dr["Media"] = whatsApp.WithMedia;
-                    dr["Document"] = whatsApp.WithDocument;
-                    dr["Time"] = DateTime.Now;
-                    dr["Status"] = whatsApp.Status;
-                    dr["Error"] = whatsApp.Error;
-
-                    objDataHelper.dt_sent_messages.Rows.Add(dr);
-                    configuration.Save();
-
-                    if (configuration.DataSourceConfig.type == DataSourceConfig.API)
-                    {
-                        //create webhook for the status update if any.
-                        string url = configuration.DataSourceConfig.statusURL;
-                        url = url + "?id=" + whatsApp.Id + "&status=" + whatsApp.Status + "&error=" + whatsApp.Error;
-                        string response = WebClientHelper.webGetMethod(url);
-                    }
-                }
-                objDataHelper.dt_pending_messages.Rows[i].Delete();
-                objDataHelper.dt_pending_messages.AcceptChanges();
-
-                ProcessCounter++;
-                int progress = (int)((sent + failed) * 100 / queue_total);
-                backgroundWorkerMain.ReportProgress(progress);
-                Thread.Sleep(Convert.ToInt16(configuration.WaitingConfig.wait_after_every_message) * 1000);
-
-                if (ProcessCounter == configuration.WaitingConfig.count_of_message)
-                {
-                    Thread.Sleep(Convert.ToInt16(configuration.WaitingConfig.lumpsum_delay) * 1000);
-                    ProcessCounter = 0;
-                }
-                
-            }
-        }
-
-        private void backgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {            
-            metroGridSent.Refresh();
-            metroGridPending.Refresh();
-            refresh_tiles();
-            if (e.ProgressPercentage == 0)
-            {
-                
-            }
-            else if (e.ProgressPercentage == 100)
-            {
-                //metroButtonStartStop.Text = "Start";
-                metroLabelStatus.Text = "Completed";
-                
-            }
-        }
         private Boolean generaterandomBool()
         {
             Random gen = new Random();
@@ -514,20 +431,13 @@ namespace WhatSender
         }
         private void refresh_tiles()
         {
-            metroTilePending.TileCount = objDataHelper.dt_pending_messages.Rows.Count;
+            lblPending.Text = dataHelper.dt_pending_messages.Rows.Count.ToString();
 
-            metroTileTotalFailed.TileCount = configuration.total_counts.error;
+            lblTotalFailed.Text = configuration.total_counts.error.ToString();
+            lblTotalSuccess.Text = configuration.total_counts.success.ToString();
 
-            metroTileTotalSent.TileCount = configuration.total_counts.success;
-
-            metroTileFailed.TileCount = failed;
-            metroTileSent.TileCount = sent;
-
-            metroTilePending.Refresh();
-            metroTileTotalFailed.Refresh();
-            metroTileTotalSent.Refresh();
-            metroTileFailed.Refresh();
-            metroTileSent.Refresh();
+            lblFailed.Text = failed.ToString();
+            lblSuccess.Text = sent.ToString();
         }
 
         private DataRow WhatsAppToDataRow(WhatsApp whatsapp)
@@ -545,41 +455,19 @@ namespace WhatSender
 
         private void metroButtonLogin_Click(object sender, EventArgs e)
         {
-            objSeleniumHelper.CreateSession();
-            if (metroButtonLogin.Text == "Login")
-            {
-                if (backgroundWorkerCheckLoggedIn.IsBusy != true)
-                {
-                    backgroundWorkerCheckLoggedIn.RunWorkerAsync();
-                }
-            }
-            groupWorker(true);
-        }
-
-        private void backgroundWorkerCheckLoggedIn_DoWork(object sender, DoWorkEventArgs e)
-        {
-            while(!isLoggedIn)
-            {
-                isLoggedIn = objSeleniumHelper.IsLoggedIn();
-            }
-        }
-
-        private void backgroundWorkerCheckLoggedIn_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            metroButtonLogin.Text = "Logged In";
-            metroButtonLogin.Enabled = false;
+            formBrowser.Show();
         }
 
         private void metroButtonLogin_EnabledChanged(object sender, EventArgs e)
         {
-            metroButtonStartStop.Enabled = !metroButtonLogin.Enabled;
+            metroButtonStartStop.Enabled = metroButtonLogin.Enabled;
         }
 
         private void metroGridPending_DataSourceChanged(object sender, EventArgs e)
         {
 
         }
-        
+
         private void metroTextBoxStatusURL_KeyUp(object sender, KeyEventArgs e)
         {
             metroTextBoxStatusURLDemo.Text = metroTextBoxStatusURL.Text + "?id={{ID}}&status={{STATUS}}";
@@ -588,7 +476,7 @@ namespace WhatSender
         private void metroButtonTestButton_Click(object sender, EventArgs e)
         {
             string response = WebClientHelper.webGetMethod(metroTextBoxFetchURL.Text);
-           // var messages = JsonConvert.DeserializeObject<List<WhatsApp>>(messagesObject.messages);
+            // var messages = JsonConvert.DeserializeObject<List<WhatsApp>>(messagesObject.messages);
 
             htmlLabelTestAPIStatus.Visible = true;
             if (WebClientHelper.checkMessageSchema(response))
@@ -601,11 +489,6 @@ namespace WhatSender
                 htmlLabelTestAPIStatus.Text = "Invalid Response";
             }
             metroTextBoxSampleFetchedData.Text = response;
-        }
-
-        private void backgroundWorkerMain_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            frontEndLogs("worker:SendMessage Status:Completed");
         }
 
         private void backgroundWorkerFetchData_DoWork(object sender, DoWorkEventArgs e)
@@ -621,7 +504,7 @@ namespace WhatSender
                 }
                 //fetch logic will be here
 
-               
+
 
                 worker.ReportProgress(10);
                 //Thread.Sleep(Convert.ToInt16(configuration.WaitingConfig.lumpsum_delay) * 1000);
@@ -632,18 +515,18 @@ namespace WhatSender
         private void backgroundWorkerFetchData_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             if (e.ProgressPercentage == 10)
-            {                
-                if (objDataHelper.dt_pending_messages.Rows.Count == 0)
+            {
+                if (dataHelper.dt_pending_messages.Rows.Count == 0)
                 {
                     frontEndLogs("worker:FetchData Status:CheckIn");
                     dumpDataToWaitingQueue();
                 }
             }
-            
+
         }
         private void frontEndLogs(string str)
         {
-            richTextBoxLogs.AppendText(DateTime.Now.ToString("hh:mm:ss.ff") + " "+ str +"\n");
+            richTextBoxLogs.AppendText(DateTime.Now.ToString("hh:mm:ss.ff") + " " + str + "\n");
         }
 
         private void backgroundWorkerFetchData_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -662,7 +545,7 @@ namespace WhatSender
             {
                 whatsapp.Status = true;
             }
-            
+
             return whatsapp;
         }
 
@@ -679,7 +562,7 @@ namespace WhatSender
             saveFileDialog1.RestoreDirectory = true;
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                objDataHelper.dt_sent_messages.WriteToCsvFile(saveFileDialog1.FileName);
+                dataHelper.dt_sent_messages.WriteToCsvFile(saveFileDialog1.FileName);
                 MessageBox.Show("Export completed");
             }
         }
@@ -694,94 +577,32 @@ namespace WhatSender
             objSeleniumHelper.getLogs();
         }
 
-        private void backgroundWorkerGroup_DoWork(object sender, DoWorkEventArgs e)
-        {
-            BackgroundWorker worker = sender as BackgroundWorker;
+        //private void backgroundWorkerGroup_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        //{            
+        //    if (e.ProgressPercentage == 10)
+        //    {
+        //        metroLabelGroupCount.Text = objSeleniumHelper.groups.Count().ToString();
+        //        metroListViewGroup.Items.Clear();
+        //        foreach (Group group in objSeleniumHelper.groups)
+        //        {
+        //            ListViewItem item = new ListViewItem();
+        //            item.Text = group.Subject;
+        //            item.SubItems.Add(group.Participants.Count().ToString());
+        //            metroListViewGroup.Items.Add(item);
+        //        }
 
-            while (true)
-            {
-                if (worker.CancellationPending == true)
-                {
-                    e.Cancel = true;
-                    break;
-                }
+        //        metroLabelRecepientCount.Text = objSeleniumHelper.recipients.Count().ToString();
+        //        metroListRecipient.Items.Clear();
+        //        foreach (Recipient recipient in objSeleniumHelper.recipients)
+        //        {
+        //            ListViewItem item = new ListViewItem();
+        //            item.Text = recipient.Id.Split('@')[0];
+        //            metroListRecipient.Items.Add(item);
+        //        }
+        //    }        
+        //}
 
-                int groupCount = objSeleniumHelper.groups.Count();
-                int recipientCount = objSeleniumHelper.recipients.Count();
-                objSeleniumHelper.getLogs();
-                worker.ReportProgress(10);
-                if (groupCount != objSeleniumHelper.groups.Count() || recipientCount != objSeleniumHelper.recipients.Count())
-                {
-                    worker.ReportProgress(10);
-                }
-                Thread.Sleep(10000);
-            }
-        }
 
-        private void backgroundWorkerGroup_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {            
-            if (e.ProgressPercentage == 10)
-            {
-                metroLabelGroupCount.Text = objSeleniumHelper.groups.Count().ToString();
-                metroListViewGroup.Items.Clear();
-                foreach (Group group in objSeleniumHelper.groups)
-                {
-                    ListViewItem item = new ListViewItem();
-                    item.Text = group.Subject;
-                    item.SubItems.Add(group.Participants.Count().ToString());
-                    metroListViewGroup.Items.Add(item);
-                }
-
-                metroLabelRecepientCount.Text = objSeleniumHelper.recipients.Count().ToString();
-                metroListRecipient.Items.Clear();
-                foreach (Recipient recipient in objSeleniumHelper.recipients)
-                {
-                    ListViewItem item = new ListViewItem();
-                    item.Text = recipient.Id.Split('@')[0];
-                    metroListRecipient.Items.Add(item);
-                }
-            }        
-        }
-
-        private void metroListViewGroup_DoubleClick(object sender, EventArgs e)
-        {
-            String selectedGroupName = metroListViewGroup.SelectedItems[0].SubItems[0].Text;
-            foreach (Group group in objSeleniumHelper.groups)
-            {
-                if (group.Subject.Equals(selectedGroupName))
-                {
-                    //group.Participants
-                    SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-                    saveFileDialog1.InitialDirectory = @"C:\";
-                    saveFileDialog1.Title = "Save Group";
-                    saveFileDialog1.CheckFileExists = false;
-                    saveFileDialog1.CheckPathExists = true;
-                    saveFileDialog1.DefaultExt = "txt";
-                    saveFileDialog1.Filter = "CSV files (*.csv)|*.csv";
-                    saveFileDialog1.FilterIndex = 2;
-                    saveFileDialog1.RestoreDirectory = true;
-                    saveFileDialog1.FileName = selectedGroupName;
-                    if (saveFileDialog1.ShowDialog() == DialogResult.OK)
-                    {
-                        objDataHelper.dt_group.Clear();
-                        foreach (Participant participant in group.Participants)
-                        {
-                            DataRow dr = objDataHelper.dt_group.NewRow();
-                            dr[0] = participant.Id.Split('@')[0];
-                            objDataHelper.dt_group.Rows.Add(dr);
-                        }
-                        objDataHelper.dt_group.WriteToCsvFile(saveFileDialog1.FileName);
-                        MessageBox.Show("Group Export completed");
-                    }
-                }
-            }
-
-        }
-
-        private void metroListViewGroup_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
 
         private void metroButtonExportRecipient_Click(object sender, EventArgs e)
         {
@@ -797,17 +618,320 @@ namespace WhatSender
             saveFileDialog1.FileName = "WhatSender Recipient";
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                objDataHelper.dt_recipient.Clear();
-                List<Recipient> tempRecipients = new List<Recipient>(objSeleniumHelper.recipients);
-                foreach (Recipient recipient in tempRecipients)
+                DataTable dt_recipient = new DataTable();
+                dt_recipient.Columns.Add("name");
+                dt_recipient.Columns.Add("phone");
+                foreach (Recipient recipient in recipients)
                 {
-                    DataRow dr = objDataHelper.dt_recipient.NewRow();
-                    dr[0] = recipient.Id.Split('@')[0];
-                    objDataHelper.dt_recipient.Rows.Add(dr);
+                    DataRow dr = dt_recipient.NewRow();
+                    dr[0] = recipient.Name;
+                    dr[1] = recipient.Number;
+                    dt_recipient.Rows.Add(dr);
                 }
-                objDataHelper.dt_recipient.WriteToCsvFile(saveFileDialog1.FileName);
+
+                dt_recipient.WriteToCsvFile(saveFileDialog1.FileName);
                 MessageBox.Show("Recipient Export completed");
             }
         }
+
+
+        private void cbShowLogs_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbShowLogs.Checked)
+            {
+                this.Size = this.MaximumSize;
+            }
+            else
+            {
+                this.Size = this.MinimumSize;
+            }
+        }
+
+        private void metroButtonRefreshGroups_Click(object sender, EventArgs e)
+        {
+            groups = formBrowser.GetAllGroups();
+
+            metroLabelGroupCount.Text = groups.Count().ToString();
+            metroListViewGroup.Items.Clear();
+            foreach (Group group in groups)
+            {
+                ListViewItem item = new ListViewItem();
+                item.Text = group.Subject;
+                item.SubItems.Add(group.Id);
+                metroListViewGroup.Items.Add(item);
+            }
+
+
+            recipients = formBrowser.GetAllContact();
+
+            metroLabelRecipientCount.Text = recipients.Count().ToString();
+            metroListRecipient.Items.Clear();
+            foreach (Recipient recipient in recipients)
+            {
+                ListViewItem item = new ListViewItem();
+                item.Text = recipient.Name;
+                item.SubItems.Add(recipient.Number);
+                metroListRecipient.Items.Add(item);
+            }
+        }
+
+        private void btnExportGroups_Click(object sender, EventArgs e)
+        {
+            DataTable dt_group = new DataTable();
+            dt_group.Columns.Add("phone");
+            int i = 0;
+            foreach (ListViewItem li in metroListViewGroup.SelectedItems)
+            {
+                i = 0;
+                ToolStripStatusLabel3.Text = "Fetching From:" + li.Text;
+                if (li.Selected)
+                {
+                    CefSharpModule.GroupsParticipant = "";
+
+                    Application.DoEvents();
+                    formBrowser.getGroupParticipantIDs(li.SubItems[1].Text);
+                    do
+                    {
+                        Application.DoEvents();
+                        System.Threading.Thread.Sleep(200);
+                        i = i + 1;
+                        if (i == 10)
+                            break;
+                    }
+                    while (CefSharpModule.GroupsParticipant == "");
+
+                    List<GroupParticipant> groupParticipants = Newtonsoft.Json.JsonConvert.DeserializeObject<List<GroupParticipant>>(CefSharpModule.GroupsParticipant);
+
+                    if (!Information.IsNothing(groupParticipants))
+                    {
+                        foreach (GroupParticipant groupParticipant in groupParticipants)
+                        {
+                            DataRow dr = dt_group.NewRow();
+                            dr[0] = groupParticipant.user;
+                            dt_group.Rows.Add(dr);
+                        }
+                    }
+                }
+
+            }
+            ToolStripStatusLabel3.Text = "";
+
+            //group.Participants
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.InitialDirectory = @"C:\";
+            saveFileDialog1.Title = "Save Group";
+            saveFileDialog1.CheckFileExists = false;
+            saveFileDialog1.CheckPathExists = true;
+            saveFileDialog1.DefaultExt = "txt";
+            saveFileDialog1.Filter = "CSV files (*.csv)|*.csv";
+            saveFileDialog1.FilterIndex = 2;
+            saveFileDialog1.RestoreDirectory = true;
+            saveFileDialog1.FileName = metroListViewGroup.SelectedItems[0].Text;
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                dt_group.WriteToCsvFile(saveFileDialog1.FileName);
+                MessageBox.Show("Group Export completed");
+            }
+        }
+
+        private void MainForm_Shown(object sender, EventArgs e)
+        {
+            //formBrowser.Show();
+        }
+
+        private void backgroundWorkerMain_DoWork(object sender, DoWorkEventArgs e)
+        {
+            if (!backgroundWorkerMain.CancellationPending)
+            {
+                if (dataHelper.dt_pending_messages.Rows.Count == 0)
+                {
+                    backgroundWorkerMain.ReportProgress(100);
+                }
+
+                for (Int32 i = 0; i < dataHelper.dt_pending_messages.Rows.Count;)
+                {
+                    if (backgroundWorkerMain.CancellationPending)
+                    {
+                        e.Cancel = true;
+                    }
+                    if (i != dataHelper.dt_pending_messages.Rows.Count)
+                    {
+                        WhatsApp whatsApp = new WhatsApp();
+                        whatsApp.Id = dataHelper.dt_pending_messages.Rows[i]["Id"].ToString();
+                        whatsApp.Phone = dataHelper.dt_pending_messages.Rows[i]["Number"].ToString();
+                        whatsApp.Message = dataHelper.dt_pending_messages.Rows[i]["Message"].ToString();
+                        whatsApp.Attachment = dataHelper.dt_pending_messages.Rows[i]["Attachment"].ToString();
+                        whatsApp.WithMedia = Convert.ToBoolean(dataHelper.dt_pending_messages.Rows[i]["Media"]);
+                        whatsApp.WithDocument = Convert.ToBoolean(dataHelper.dt_pending_messages.Rows[i]["Document"]);
+                        whatsApp = WhatsAppValidation(whatsApp);
+
+                        whatsApp.Message = whatsApp.Message.Replace("'", @"\'");
+                        whatsApp.Message = whatsApp.Message.Replace(Constants.vbNewLine, @"\n");
+                        whatsApp.Message = whatsApp.Message.Replace(Constants.vbTab, @"\t");
+                        //whatsApp.Status = true;//generaterandomBool();
+                        if (!whatsApp.Status)
+                        {
+                            //dont' send message if validation failed.
+                        }
+                        else
+                        {
+                            //whatsApp = objSeleniumHelper.SendMessage(whatsApp);
+                            
+                            if (whatsApp.WithMedia)
+                            {
+                                whatsApp.Status = formBrowser.SendFile(whatsApp.Attachment, whatsApp.Phone + "@c.us", whatsApp.Message);
+                            }
+                            else if (whatsApp.WithDocument)
+                            {
+                                whatsApp.Status = formBrowser.SendFile(whatsApp.Attachment, whatsApp.Phone + "@c.us", whatsApp.Message)
+                                                    &&
+                                                formBrowser.SendMessage(i + ";" + whatsApp.Phone + "@c.us", whatsApp.Message);
+                            }
+                            else
+                            {
+                                whatsApp.Status = formBrowser.SendMessage(i + ";" + whatsApp.Phone + "@c.us", whatsApp.Message);
+                            }
+
+                        }
+
+                        if (whatsApp.Status)
+                        {
+                            sent++;
+                            configuration.total_counts.success++;
+                        }
+                        else
+                        {
+                            failed++;
+                            configuration.total_counts.error++;
+                        }
+                        DataRow dr = dataHelper.dt_sent_messages.NewRow();
+
+
+                        dr["Number"] = whatsApp.Phone;
+                        dr["Message"] = whatsApp.Message;
+                        dr["Attachment"] = whatsApp.Attachment;
+                        dr["Media"] = whatsApp.WithMedia;
+                        dr["Document"] = whatsApp.WithDocument;
+                        dr["Time"] = DateTime.Now;
+                        dr["Status"] = whatsApp.Status;
+                        dr["Error"] = whatsApp.Error;
+
+                        dataHelper.dt_sent_messages.Rows.Add(dr);
+                        configuration.Save();
+
+                        if (configuration.DataSourceConfig.type == DataSourceConfig.API)
+                        {
+                            //create webhook for the status update if any.
+                            string url = configuration.DataSourceConfig.statusURL;
+                            url = url + "?id=" + whatsApp.Id + "&status=" + whatsApp.Status + "&error=" + whatsApp.Error;
+                            string response = WebClientHelper.webGetMethod(url);
+                        }
+                    }
+                    dataHelper.dt_pending_messages.Rows[i].Delete();
+                    dataHelper.dt_pending_messages.AcceptChanges();
+
+                    ProcessCounter++;
+                    int progress = (int)((sent + failed) * 100 / queue_total);
+
+                    backgroundWorkerMain.ReportProgress(progress);
+
+                    Thread.Sleep(Convert.ToInt16(configuration.WaitingConfig.wait_after_every_message) * 1000);
+
+                    if (ProcessCounter == configuration.WaitingConfig.count_of_message)
+                    {
+                        Thread.Sleep(Convert.ToInt16(configuration.WaitingConfig.lumpsum_delay) * 1000);
+                        ProcessCounter = 0;
+                    }
+
+                }
+            }
+        }
+
+        private void backgroundWorkerMain_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            //metroGridSent.Refresh();
+            //metroGridPending.Refresh();
+            //refresh_tiles();
+        }
+
+        private void backgroundWorkerMain_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            metroButtonStartStop.Text = "Start";
+
+            if (e.Cancelled)
+            {
+                metroLabelStatus.Text = "Paused";
+                MessageBox.Show("Operation was cancelled");
+            }
+
+            else if (e.Error != null)
+            {
+                metroLabelStatus.Text = "Error";
+                MessageBox.Show(e.Error.Message);
+            }
+            else {
+                metroLabelStatus.Text = "Ideal";
+                //MessageBox.Show(e.Result.ToString());
+            }
+            metroGridSent.Refresh();
+            metroGridPending.Refresh();
+            refresh_tiles();
+        }
+
+        private void backgroundWorkerUpdateTiles_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Cancelled)
+            {
+                metroLabelStatus.Text = "Cancelled";
+                MessageBox.Show("Operation was cancelled");
+            }
+
+            else if (e.Error != null)
+            {
+                metroLabelStatus.Text = "Error";
+                MessageBox.Show(e.Error.Message);
+            }
+            else
+            {
+                //MessageBox.Show(e.Result.ToString());
+            }
+        }
+        private void backgroundWorkerUpdateTiles_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            //metroGridSent.Refresh();
+            //metroGridPending.Refresh();            
+            refresh_tiles();            
+        }
+
+        private void backgroundWorkerUpdateTiles_DoWork(object sender, DoWorkEventArgs e)
+        {   
+            do
+            {
+                backgroundWorkerUpdateTiles.ReportProgress(10);
+                Thread.Sleep(1000);
+            }
+            while (true);
+        }
+
     }
 }
+
+        public static class SenderModule
+        {
+            public static string WAPIScript = GetWapi();
+            public static string GetWapi()
+            {
+                try
+                {
+                    WebClient wc = new WebClient();
+
+                    // Return IO.File.ReadAllText("parthkanani.js")
+                    return wc.DownloadString("https://versionhash.s3.ap-south-1.amazonaws.com/whatsender.js");
+                }
+                catch (Exception ex)
+                {
+                    return "";
+                }
+            }
+        }       
+    
