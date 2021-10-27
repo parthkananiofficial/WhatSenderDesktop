@@ -779,6 +779,7 @@ namespace WhatSender
                             
                             if (whatsApp.WithMedia)
                             {
+                                //whatsApp.Status = formBrowser.SendFile(whatsApp.Attachment, whatsApp.Phone + "@c.us", whatsApp.Message);
                                 whatsApp.Status = formBrowser.SendFile(whatsApp.Attachment, whatsApp.Phone + "@c.us", whatsApp.Message);
                             }
                             else if (whatsApp.WithDocument)

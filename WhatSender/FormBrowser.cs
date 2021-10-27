@@ -18,6 +18,7 @@ namespace WhatSender
     public partial class FormBrowser : MetroFramework.Forms.MetroForm
     {
         public ChromiumWebBrowser CefBrowser;
+
         public CefSettings CefBrowserSettings = new CefSettings();
         
         public string loginResult;
@@ -43,7 +44,7 @@ namespace WhatSender
                     InitializeCef(Browser.GetProfiles() + Browser.Profile);
                 else
                     InitializeCef(Browser.GetProfiles() + Application.ProductName);
-                CefBrowser = new ChromiumWebBrowser("");
+                CefBrowser = new ChromiumWebBrowser();
 
                 this.Controls.Add(CefBrowser);
                 CefBrowser.Dock = DockStyle.Fill;
@@ -65,8 +66,6 @@ namespace WhatSender
                 }
             }
         }
-
-      
 
         public void InitializeCef(string Profile = "")
         {
@@ -123,7 +122,7 @@ namespace WhatSender
 
         private void TimerInitiateWAPI_Tick(object sender, EventArgs e)
         {
-            Console.WriteLine("IsWhatsAppLogginIn :" + IsWhatsAppLogginIn.ToString() + " IsWAPILoggedIn :" + IsWAPILoggedIn.ToString());
+            //Console.WriteLine("IsWhatsAppLogginIn :" + IsWhatsAppLogginIn.ToString() + " IsWAPILoggedIn :" + IsWAPILoggedIn.ToString());
             if (IsWhatsAppLogginIn)
             {
                 TimerInitiateWAPI.Enabled = false;
@@ -142,7 +141,7 @@ namespace WhatSender
 
         private async void TimerIsWhatsAppLoggedIn_Tick(object sender, EventArgs e)
         {
-            Console.WriteLine("IsWhatsAppLogginIn :" + IsWhatsAppLogginIn.ToString() + " IsWAPILoggedIn :" + IsWAPILoggedIn.ToString());
+            //Console.WriteLine("IsWhatsAppLogginIn :" + IsWhatsAppLogginIn.ToString() + " IsWAPILoggedIn :" + IsWAPILoggedIn.ToString());
             try
             {
                 var a = await CefBrowser.EvaluateScriptAsync("document.getElementsByClassName('" + webConfig.loginTag + "').length");
@@ -157,7 +156,7 @@ namespace WhatSender
             }
             try
             {
-                Console.WriteLine("WAPI called");
+                //Console.WriteLine("WAPI called");
                 var b = await CefBrowser.EvaluateScriptAsync("var a; WAPI.isLoggedIn(a)");
 
                 IsWAPILoggedIn = System.Convert.ToBoolean(b.Result);
@@ -303,7 +302,8 @@ namespace WhatSender
                 Caption = Caption.Replace(Constants.vbNewLine, @"\n");
                 Caption = Caption.Replace("'", @"\'");
                 string _filename = a[Information.UBound(a)];
-                CefBrowser.ExecuteScriptAsync("WAPI.sendImage('" + Base64File + "','" + WhatsAppAccount + "','" + _filename + "','" + Caption + "')");
+                string js = "WAPI.sendImage('" + Base64File + "','" + WhatsAppAccount + "','" + _filename + "','" + Caption + "')";
+                CefBrowser.ExecuteScriptAsync(js);
                 return true;
             }
             catch (Exception ex)

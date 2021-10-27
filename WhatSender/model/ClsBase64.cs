@@ -53,11 +53,10 @@ public class ClsBase64
 
             case ".mp4":
                 {
-                    // MimeType = "data:video/mp4;base64,"
-                    MimeType = "data:application/mpeg;base64,";
+                    //MimeType = "data:video/mp4;base64,";
+                    MimeType = "data:application/mp4;base64,";
                     break;
                 }
-
             case ".txt":
                 {
                     MimeType = "data:text/plain;base64,";
