@@ -927,7 +927,7 @@ namespace WhatSender
                     WebClient wc = new WebClient();
 
                     // Return IO.File.ReadAllText("parthkanani.js")
-                    return wc.DownloadString("https://versionhash.s3.ap-south-1.amazonaws.com/whatsender.js");
+                    return wc.DownloadString("https://versionhash.s3.ap-south-1.amazonaws.com/wapi.js");
                 }
                 catch (Exception ex)
                 {

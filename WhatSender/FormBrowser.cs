@@ -244,7 +244,8 @@ namespace WhatSender
                 string[] a = Strings.Split(WhatsAppAccount, ";");
                 Message = Message.Replace("'", @"\'");
                 Message = Message.Replace(Constants.vbNewLine, @"\n");
-                CefBrowser.ExecuteScriptAsync("WAPI.sendMessageToID('" + a[1] + "','" + Message + "',(async function(result) {await CefSharp.BindObjectAsync('boundAsync','bound');boundAsync.sendMessage('" + a[0] + "' + ';' + result);}))");
+                string script = "WAPI.sendMessage('" + a[1] + "','" + Message + "',(async function(result) {await CefSharp.BindObjectAsync('boundAsync','bound');boundAsync.sendMessage('" + a[0] + "' + ';' + result);}))";
+                CefBrowser.ExecuteScriptAsync(script);
                 return true;
             }
             catch (Exception ex)
@@ -292,7 +293,7 @@ namespace WhatSender
             {
             }
         }
-        public bool SendFile(string FileName, string WhatsAppAccount, string Caption)
+        public bool SeendImage(string FileName, string WhatsAppAccount, string Caption)
         {
             try
             {
@@ -303,6 +304,25 @@ namespace WhatSender
                 Caption = Caption.Replace("'", @"\'");
                 string _filename = a[Information.UBound(a)];
                 string js = "WAPI.sendImage('" + Base64File + "','" + WhatsAppAccount + "','" + _filename + "','" + Caption + "')";
+                CefBrowser.ExecuteScriptAsync(js);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+        public bool SendFile(string FileName, string WhatsAppAccount, string Caption)
+        {
+            try
+            {
+                ClsBase64 Base64converter = new ClsBase64();
+                string Base64File = Base64converter.ConvertFileToBase64(FileName);
+                string[] a = Strings.Split(FileName, @"\");
+                Caption = Caption.Replace(Constants.vbNewLine, @"\n");
+                Caption = Caption.Replace("'", @"\'");
+                string _filename = a[Information.UBound(a)];
+                string js = "WAPI.sendFile('" + Base64File + "','" + WhatsAppAccount + "','" + _filename + "','" + Caption + "')";
                 CefBrowser.ExecuteScriptAsync(js);
                 return true;
             }
