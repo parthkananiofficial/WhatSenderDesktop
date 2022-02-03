@@ -1484,7 +1484,7 @@ namespace WhatSender
             this.metroTabControl.Controls.Add(this.metroTabPage3);
             this.metroTabControl.Location = new System.Drawing.Point(20, 60);
             this.metroTabControl.Name = "metroTabControl";
-            this.metroTabControl.SelectedIndex = 1;
+            this.metroTabControl.SelectedIndex = 0;
             this.metroTabControl.Size = new System.Drawing.Size(1079, 608);
             this.metroTabControl.Style = MetroFramework.MetroColorStyle.Green;
             this.metroTabControl.TabIndex = 1;
@@ -1719,7 +1719,7 @@ namespace WhatSender
             this.Name = "MainForm";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Style = MetroFramework.MetroColorStyle.Default;
-            this.Text = "WhatSender - WhatApp Bulk Message Sender";
+            this.Text = "WhatSender - WhatApp Bulk Message Composer";
             this.Theme = MetroFramework.MetroThemeStyle.Default;
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.Shown += new System.EventHandler(this.MainForm_Shown);

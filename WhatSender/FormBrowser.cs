@@ -77,6 +77,7 @@ namespace WhatSender
                     CefBrowserSettings.RemoteDebuggingPort = 8080;
                     CefBrowserSettings.UserDataPath = Profile;
                     CefBrowserSettings.CachePath = Profile;
+                    CefBrowserSettings.BrowserSubprocessPath = "ChromiumBrowserControl";                    
                     CefBrowserSettings.CefCommandLineArgs.Add("user-data-dir", Profile);
                     CefSharp.Cef.Initialize(CefBrowserSettings);
                 }
